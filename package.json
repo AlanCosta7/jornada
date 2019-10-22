@@ -1,0 +1,48 @@
+{
+  "name": "jornada",
+  "version": "0.0.1",
+  "description": "Card para os jovens acompanhar desempenho ",
+  "productName": "Jornada App",
+  "cordovaId": "app.jornada",
+  "capacitorId": "",
+  "author": "alanpc7 <alanpc7@gmail.com>",
+  "private": true,
+  "scripts": {
+    "start": "npm run start:prod",
+    "start:prod": "APP_ENV=prod quasar dev",
+    "build": "quasar build --mode pwa",
+    "lint": "eslint --ext .js,.vue src",
+    "lint:fix": "eslint --ext .js,.vue src --fix",
+    "serve": "quasar serve dist/pwa-mat",
+    "deploy": "npm run build && firebase deploy --only hosting:jornada-jovem",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "axios": "^0.18.1",
+    "firebase": "^5.8.6",
+    "firebaseui": "^3.5.2",
+    "lodash-es": "^4.17.15",
+    "quasar": "^1.0.0",
+    "vue-i18n": "^8.0.0",
+    "vuefire": "^1.4.5",
+    "vuelidate": "^0.7.4",
+    "vuex": "^3.1.1",
+    "vuexfire": "^3.0.0-alpha.14"
+  },
+  "devDependencies": {
+    "@quasar/app": "^1.0.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-vue": "^5.2.3"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "last 1 version, not dead, ie >= 11"
+  ]
+}

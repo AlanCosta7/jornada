@@ -6,6 +6,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },      
       { path: 'login', component: () => import('pages/auth/login') },
+      { path: 'politica', name: 'politica', component: () => import('pages/legal/Politica_privacidade') }
     ]
   },
   {
@@ -14,7 +15,7 @@ const routes = [
     children: [
       { path: '', redirect: 'projects' },
       { path: 'card', name: 'projects', component: () => import('pages/card/inicio') },
-      { path: 'cla', name: 'painel', component: () => import('pages/card/cla') }
+      { path: 'cla', name: 'painel', component: () => import('pages/card/cla') }, 
     ]
   }
 ]

@@ -1,24 +1,21 @@
 <template>
-  <q-page class="page-login">
-    <q-layout class="flex column">
-      <div class="bg-tertiary cardtop">
+  <q-page class="page-login bg-primary">
+    <q-layout class="flex flex-center column">
+      <div class="bg-tertiary">
         <router-link to="/" />
       </div>
       <div class="flex flex-center">
-        <div v-show="!currentUser" class="flex flex-center column shadow-4 cardlogin">
-          <h2 class="text-primary text-bold">
-            Login
-          </h2>
-          <p class="subtitulo">
+        <div v-show="!currentUser" class="flex flex-center column">
+          <h2 class="text-white my-font">
             Sua jornada começa aqui 
-          </p>
-          <div id="firebaseui-auth-container" />
+          </h2>
+          <div class="q-pa-xl" id="firebaseui-auth-container" />
         </div>
-        <div v-show="currentUser" class="flex flex-center column shadow-4 cardlogin">
-          <h2 class="text-primary text-bold">
+        <div v-show="currentUser" class="flex flex-center column">
+          <h2 class="text-white text-bold">
             Redirecionando...
           </h2>
-          <p class="subtitulo">
+          <p class="subtitulo my-font text-white">
             Você já está conectado!
           </p>
         </div>
@@ -30,7 +27,7 @@
 <script>
   import Vuex from 'vuex'
   import { firebase } from '../../boot/firebase.js'
-  import { Loading } from 'quasar'
+  import { Loading, QSpinnerOval } from 'quasar'
 
   export default {
     name: 'PageLogin',
@@ -101,7 +98,7 @@
     methods: {
       ...Vuex.mapActions(['logout']),
       redirectToApp(redirectDelay) {
-        Loading.show({ delay: 300 })
+        Loading.show({ spinner: QSpinnerOval, message: 'Entrando...'})
         setTimeout(() => {
         Loading.hide()
           this.$router.replace({ name: 'projects' })
@@ -114,27 +111,12 @@
 
 <style scope>
 
-  .page-login .cardtop {
-    width: 100%;
-    height: 200px;
-    padding: 2em 1rem;
-    text-align: center;
-  }
-
   .page-login .base-logo {
     max-width: 200px;
   }
 
   .cardImg {
     margin-top: -110px;
-  }
-  
-  .page-login .cardlogin {
-    position: relative;
-    margin-top: -50px;
-    border-radius: 2px;
-    background-color: white;
-    padding: 2rem 2rem;
   }
 
   .page-login .subtitulo {

@@ -5,10 +5,9 @@
         <q-toolbar-title class="text-grey-10 text-weight-bolder">
           Jornada
         </q-toolbar-title>
-        <template v-if="currentUser">
+        <template v-if="cards.length !== 0">
           <div>
-            <q-btn round icon="bookmark" color="amber">
-              
+            <q-btn round icon="bookmark" :color="color">
             </q-btn>
             <q-menu style="width: 150px;">
               <q-list class="no-wrap">
@@ -71,7 +70,31 @@ export default {
     };
   },
   computed: {
-    ...Vuex.mapGetters(["currentUser"])
+    ...Vuex.mapGetters({
+      currentUser: "currentUser",
+      cards: "cards",
+      jornada: "jornada"
+    }),
+    color() {
+      let color = "orange" 
+      let cards = this.cards
+      if (cards.cla === "fe") {
+        color = "orange" 
+        this.msg ='Fé' 
+      } else if (cards.cla === "amor") {
+        color = "red-8"
+        this.msg ='Amor' 
+      } else if (cards.cla === "esperanca" ) {
+        color = "green-6" 
+        this.msg ='Esperança' 
+      } else {
+        color = "orange"
+      }
+      return color
+    },
+  },
+  mounted() {
+    this.$store.dispatch('userCadastrado')
   },
   methods: {
     sair() {

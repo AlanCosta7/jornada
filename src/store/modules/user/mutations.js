@@ -8,3 +8,7 @@ export const setCurrentUser = (state, payload) => {
 export const setCards = (state, payload) => {
   state.cards = payload
 }
+
+export const setBlock = (state, payload) => {
+  state.block = payload
+}

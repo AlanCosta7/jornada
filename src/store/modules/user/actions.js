@@ -1,6 +1,6 @@
 import { $auth, $firestore, firebase } from 'boot/firebase'
 import { assert, getCommonsIds, mapQuerySnapshot } from '../../shared/helper'
-import { Loading } from 'quasar'
+import { Loading, QSpinnerOval } from 'quasar'
 
 export const getUserById = ({ }, userId) => {
   return $firestore.collection('users').doc(userId)
@@ -44,7 +44,7 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
     name: payload.displayName,
     email: payload.email,
     photoUrl: payload.photoURL,
-    sexo: payload.sexo,
+    cla: "fe",
     1: 0,
     2: 0,
     3: 0,
@@ -55,7 +55,8 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
     8: 0,
     9: 0,
     0: 0,
-    jcoins: 0
+    jcoins: 0,
+    saida: 0
   }
   await $firestore
     .collection('users')
@@ -64,9 +65,37 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
   return newUser
 }
 
+export const updateJcoins = async ({ rootState }, payload) => {
+  const { uid } = getCommonsIds({ rootState })  
+  const jcoins = await $firestore
+    .collection('users')
+    .doc(uid)
+    .update(payload)
+  return jcoins
+}
+
+export const blockJornada = async ({ commit }) => {
+  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+
+  const cards = await $firestore
+    .collection('jornada')
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+          commit('setBlock', doc.data())
+          Loading.hide()
+      });
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+    });
+    Loading.hide()
+    return cards
+}
+
 export const userCadastrado = async ({ rootState, commit }) => {
   const { uid } = getCommonsIds({ rootState })
-  Loading.show()
+  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
 
   const cards = await $firestore
     .collection('users')

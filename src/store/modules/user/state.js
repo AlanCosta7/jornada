@@ -1,6 +1,7 @@
 export const state = {
   currentUser: null,
   cards: [],
+  block: [],
   jornada: [
     {
       slide: "1",

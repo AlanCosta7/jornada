@@ -1,13 +1,15 @@
 <template>
-  <q-page id="page-inicio" :class="sexo = cards.sexo ? cards.sexo : sexo">
+  <q-page id="page-inicio" :class="cla = cards.cla ? cards.cla : 'bg-blue-grey'">
     <div class="q-pa-sm">
       <div class="column flex flex-center">
         <div v-if="cards.length !== 0">
             <div class="row items-center">
-                <q-icon class="q-ma-xs" name="monetization_on" color="amber" /><p class="col q-my-xs text-caption text-white">J${{jcoins.toFixed(2)}}</p>
-                <q-btn size="xs" class="col-2 q-ma-xs text-black" push label="Atualizar" @click="atualizar" color="amber"></q-btn>
+                <q-icon class="q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(jcoins-cards.saida).toFixed(2)}}</p>
+                <q-icon class="q-ma-xs" name="bookmark" color="white" /><p class="col q-my-xs text-caption text-white">{{msg}}</p>
+
+                <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
             </div>
-            <div class="column flex flex-center q-py-xs">
+            <div class="column flex flex-center q-pa-sm">
                 <div v-if="user.photoURL">
                     <img class="avatar" :src="user.photoURL" alt="foto perfil">
                 </div>
@@ -15,59 +17,55 @@
             <div class="row">
                 <div class="col-6 column">
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[0].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="coordenacao" color="secondary" class="col-7 q-mt-xs" />
-                        <p class="textcap text-white">Coordenação</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[0].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="coordenacao" color="primary" class="col-7 q-mt-xs" />
+                        <p class="textcap text-white">Coordenação/{{(coordenacao*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[2].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="criatividade" color="secondary" class="col-7 q-mx-xs" />
-                        <p class="textcap text-white">Criatividade</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[2].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="criatividade" color="primary" class="col-7 q-mx-xs" />
+                        <p class="textcap text-white">Criatividade/{{(criatividade*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[4].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="pensamento" color="secondary" class="col-7 q-mx-xs" />
-                        <p class="textcap text-white">Pensamento Crítico</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[4].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="pensamento" color="primary" class="col-7 q-mx-xs" />
+                        <p class="textcap text-white">Pensamento Crítico/{{(pensamento*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[6].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="servir" color="secondary" class="col-7 q-mx-xs" />
-                        <p class="textcap text-white">Serviço</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[6].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="servir" color="primary" class="col-7 q-mx-xs" />
+                        <p class="textcap text-white">Serviço/{{(servir*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[8].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="problema" color="secondary" class="col-7 q-mx-xs" />
-                        <p class="textcap text-white">Problemas Complexos</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[8].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="problema" color="primary" class="col-7 q-mx-xs" />
+                        <p class="textcap text-white">Problemas Complexos/{{(problema*100).toFixed(2)}}%</p>
                     </div>
                 </div>
                 <div class="col-6 column">
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[1].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="aprendizado" color="secondary" class="col-7 q-mx-xs" />
-                    <p class="textcap text-white">Aprendizado</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[1].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="aprendizado" color="primary" class="col-7 q-mx-xs" />
+                    <p class="textcap text-white">Aprendizado/{{(aprendizado*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[3].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="negociacao" color="secondary" class="col-7 q-mx-xs" />
-                    <p class="textcap text-white">Negociação</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[3].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="negociacao" color="primary" class="col-7 q-mx-xs" />
+                    <p class="textcap text-white">Negociação/{{(negociacao*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[5].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="gestao" color="secondary" class="col-7 q-mx-xs" />
-                    <p class="textcap text-white">Gestão de Pessoas</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[5].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="gestao" color="primary" class="col-7 q-mx-xs" />
+                    <p class="textcap text-white">Gestão de Pessoas/{{(gestao*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[7].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="emocao" color="secondary" class="col-7 q-mx-xs" />
-                    <p class="textcap text-white">Inteligência Emocional</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[7].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="emocao" color="primary" class="col-7 q-mx-xs" />
+                    <p class="textcap text-white">Inteligência Emocional/{{(emocao*100).toFixed(2)}}%</p>
                     </div>
                     <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[9].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="decisao" color="secondary" class="col-7 q-mx-xs" />
-                    <p class="textcap text-white">Tomada de Decisão</p>
+                        <img width="5px" height="5px" class="col-3" :src="icones[9].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="decisao" color="primary" class="col-7 q-mx-xs" />
+                    <p class="textcap text-white">Tomada de Decisão/{{(decisao*100).toFixed(2)}}%</p>
                     </div>
                 </div>
             </div>
         </div>
             <div v-if="cards.length == 0"> 
                 <h6 class="q-mt-xl text-white lulo">
-                    Olá {{ user.nome }},
+                    Olá {{ user.nome }}!
                 </h6>
-                <div class="column">
-                <q-radio v-model="sexo" val="masculino" color="secondary" label="Masculino" />
-                <q-radio v-model="sexo" val="feminino" color="secondary" label="Feminino" />
-                </div>
-                <q-btn @click="iniciar" :disable="sexo == 'neutro'" color="positive" label="Vamos começar?"></q-btn>
+                <q-btn @click="iniciar" color="positive" label="Vamos começar?"></q-btn>
             </div>
       </div>
     </div>
@@ -81,7 +79,6 @@ export default {
   name: "Iniciopage",
   data() {
     return {
-      sexo: 'neutro',
       numero: 1
     };
   },
@@ -91,6 +88,37 @@ export default {
       cards: "cards",
       icones: "jornada"
     }),
+    msg() {
+      let msg = "Fé" 
+      let cards = this.cards
+      if (cards.cla === "fe") {
+        msg ='Fé' 
+      } else if (cards.cla === "amor") {
+        msg ='Amor' 
+      } else if (cards.cla === "esperanca" ) {
+        msg ='Esperança' 
+      } else {
+        msg = "Fé" 
+      }
+      return msg    
+    },
+    color() {
+      let color = "fe" 
+      let cards = this.cards
+      if (cards.cla === "fe") {
+        color = "amber" 
+        this.msg ='Fé' 
+      } else if (cards.cla === "amor") {
+        color = "red-8"
+        this.msg ='Amor' 
+      } else if (cards.cla === "esperanca" ) {
+        color = "green-6" 
+        this.msg ='Esperança' 
+      } else {
+        color = "fe"
+      }
+      return color
+    },
     coordenacao() {
         let a = this.cards[0] * 1
         let b = this.cards[1] * 0.5
@@ -257,18 +285,18 @@ export default {
     }
   },
   mounted() {
-      console.log(this.aprendizado, this.coordenacao)
         this.$store.dispatch('userCadastrado')
   },
   methods: {
     iniciar() {
         const user = this.user
-        user.sexo = this.sexo 
         this.$store.dispatch('createOrUpdateOnFirestore', user)
         this.$store.dispatch('userCadastrado')
     },
-    atualizar() {
-        this.$store.dispatch('userCadastrado')
+    async atualizar() {
+        await this.$store.dispatch('userCadastrado') 
+        let jcoins = {jcoins: this.jcoins}
+        await this.$store.dispatch('updateJcoins', jcoins) 
     }
   },
 };
@@ -282,14 +310,5 @@ export default {
   }
   .textcap {
     font-size: 0.7em
-  }
-  .masculino {
-    background-color: #027be3
-  }
-  .feminino {
-    background-color: #ff4081
-  }
-  .neutro {
-    background-color: #ffc107
   }
 </style>

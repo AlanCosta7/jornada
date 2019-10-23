@@ -97,9 +97,9 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {}, // only for NON InjectManifest
       manifest: {
-        name: 'Jornada App',
-        short_name: 'Jornada App',
-        description: 'Card para os jovens acompanhar desempenho ',
+        name: 'Jornada',
+        short_name: 'Jornada',
+        description: 'Card para acompanhar desempenho ',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

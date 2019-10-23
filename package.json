@@ -1,8 +1,8 @@
 {
   "name": "jornada",
   "version": "0.0.1",
-  "description": "Card para os jovens acompanhar desempenho ",
-  "productName": "Jornada App",
+  "description": "Card para acompanhar desempenho",
+  "productName": "Jornada",
   "cordovaId": "app.jornada",
   "capacitorId": "",
   "author": "alanpc7 <alanpc7@gmail.com>",

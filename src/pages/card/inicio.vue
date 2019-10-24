@@ -9,55 +9,95 @@
 
                 <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
             </div>
-            <div class="column flex flex-center q-pa-sm">
+            <div class="column flex flex-center q-pa-md">
                 <div v-if="user.photoURL">
                     <img class="avatar" :src="user.photoURL" alt="foto perfil">
                 </div>
             </div>
             <div class="row">
                 <div class="col-6 column">
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[0].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="coordenacao" color="primary" class="col-7 q-mt-xs" />
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[0].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="coordenacao" color="primary" class="col q-mt-xs" />
+                      </div>
                         <p class="textcap text-white">Coordenação/{{(coordenacao*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[2].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="criatividade" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[2].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px"  :value="criatividade" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                         <p class="textcap text-white">Criatividade/{{(criatividade*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[4].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="pensamento" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img wwidth="100px" height="100px" class="col-xs-3" :src="icones[4].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px"  :value="pensamento" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                         <p class="textcap text-white">Pensamento Crítico/{{(pensamento*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[6].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="servir" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[6].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px"  :value="servir" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                         <p class="textcap text-white">Serviço/{{(servir*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[8].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="problema" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[8].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px"  :value="problema" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                         <p class="textcap text-white">Problemas Complexos/{{(problema*100).toFixed(2)}}%</p>
                     </div>
+
                 </div>
                 <div class="col-6 column">
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[1].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="aprendizado" color="primary" class="col-7 q-mx-xs" />
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[1].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="aprendizado" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                     <p class="textcap text-white">Aprendizado/{{(aprendizado*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[3].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="negociacao" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[3].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="negociacao" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                     <p class="textcap text-white">Negociação/{{(negociacao*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[5].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="gestao" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[5].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="gestao" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                     <p class="textcap text-white">Gestão de Pessoas/{{(gestao*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[7].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="emocao" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[7].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="emocao" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                     <p class="textcap text-white">Inteligência Emocional/{{(emocao*100).toFixed(2)}}%</p>
                     </div>
-                    <div class="row flex flex-center q-ma-xs">
-                        <img width="5px" height="5px" class="col-3" :src="icones[9].icone" alt=""> <q-linear-progress rounded style="height: 5px" :value="decisao" color="primary" class="col-7 q-mx-xs" />
+
+                    <div class="column flex flex-center q-ma-xs">
+                      <div class="row items-center ">
+                        <img width="100px" height="100px" class="col-xs-3" :src="icones[9].icone" alt=""> 
+                        <q-linear-progress rounded style="max-width: 250px; height: 8px" :value="decisao" color="primary" class="col-7 q-mx-xs" />
+                      </div>
                     <p class="textcap text-white">Tomada de Decisão/{{(decisao*100).toFixed(2)}}%</p>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -305,10 +345,10 @@ export default {
 <style>
 #page-inicio
   .avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
   }
   .textcap {
-    font-size: 0.7em
+    font-size: 0.7rem;
   }
 </style>

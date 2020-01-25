@@ -65,8 +65,8 @@
         // signInSuccessUrl: '/app/projects',
         signInOptions: [
           firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-          firebase.auth.FacebookAuthProvider.PROVIDER_ID
-          //firebase.auth.EmailAuthProvider.PROVIDER_ID
+          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID
         ],
         //tosUrl: '/legal/privacy',
         //privacyPolicyUrl: '/legal/privacy',
@@ -80,14 +80,14 @@
             function updateLabels() {
               const elGoogle = document.querySelector('.firebaseui-idp-google .firebaseui-idp-text-long')
               const elFacebook = document.querySelector('.firebaseui-idp-facebook .firebaseui-idp-text-long')
-              // const elEmail = document.querySelector('.firebaseui-idp-password .firebaseui-idp-text-long')
-              const elementsExists = elGoogle && elFacebook /* && elEmail */
+              const elEmail = document.querySelector('.firebaseui-idp-password .firebaseui-idp-text-long')
+              const elementsExists = elGoogle && elFacebook && elEmail 
               if (!elementsExists) {
                 window.requestAnimationFrame(updateLabels)
               } else {
                 elGoogle.textContent = 'Acessar com Google'
                 elFacebook.textContent = 'Acessar com Facebook'
-                // elEmail.textContent = 'Acessar com Email'
+                elEmail.textContent = 'Acessar com Email'
               }
             }
           }

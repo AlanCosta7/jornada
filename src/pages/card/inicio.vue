@@ -1,11 +1,11 @@
 <template>
-  <q-page id="page-inicio" :class="cla = cards.cla ? cards.cla : 'bg-blue-grey'">
+  <q-page id="page-inicio" class="bg-blue">
     <div class="q-pa-sm">
       <div class="column flex flex-center">
         <div v-if="cards.length !== 0">
             <div class="row items-center">
                 <q-icon class="q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(jcoins-cards.saida).toFixed(2)}}</p>
-                <q-icon class="q-ma-xs" name="bookmark" color="white" /><p class="col q-my-xs text-caption text-white">{{msg}}</p>
+                <!-- <q-icon class="q-ma-xs" name="bookmark" color="white" /><p class="col q-my-xs text-caption text-white">{{msg}}</p> -->
 
                 <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
             </div>

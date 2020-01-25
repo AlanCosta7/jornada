@@ -1,6 +1,6 @@
 <template>
   <q-page class="backgroud column flex flex-center">
-    <img width="100px" class="imgIndex" src="../assets/icons/jovem.svg" alt="">
+    <img width="270px" class="imgIndex" src="../assets/icons/jovem.png" alt="">
     <dir class="col-4"></dir>
     <q-btn to="/login" color="black" outline class=" q-ma-xl" label="Entrar"></q-btn>
   </q-page>

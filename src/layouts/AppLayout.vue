@@ -14,14 +14,14 @@
                 <q-item :to="{ name: 'projects' }" exact>
                   <q-item-section>
                     <q-item-label label>
-                      Início
+                      Dashboard
                     </q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-item :to="{ name: 'painel' }" exact>
                   <q-item-section>
                     <q-item-label label>
-                      Painel
+                      Desafio
                     </q-item-label>
                   </q-item-section>
                 </q-item>

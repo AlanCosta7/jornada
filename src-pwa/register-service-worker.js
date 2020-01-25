@@ -37,14 +37,10 @@ register(process.env.SERVICE_WORKER_FILE, {
     }
   },
 
-  updated (/* registration */) {
-    
-    if (window.confirm('Existe uma versão disponível. Deseja atualizar?')) {
-      // window.__refreshing = true
-      window.location.reload(true)
-    } else {
-      console.info('Nova versão ignorada pelo usuário.')
-    }
+  updated(registration) {
+    console.log('New content is available; please refresh.')
+    const el = document.querySelector('#new-version-available')
+    el && el.classList.add('show')
   },
 
   offline () {

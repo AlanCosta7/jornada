@@ -44,7 +44,7 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
     name: payload.displayName,
     email: payload.email,
     photoUrl: payload.photoURL,
-    cla: "fe",
+    cla: "amor",
     1: 0,
     2: 0,
     3: 0,

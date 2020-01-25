@@ -55,7 +55,8 @@ module.exports = function (ctx) {
       plugins: [      
         'LocalStorage',
         'Dialog'
-      ]
+      ],
+      i18n: 'pt-br'
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -93,8 +94,10 @@ module.exports = function (ctx) {
     },
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
-    pwa: {
-      // workboxPluginMode: 'InjectManifest',
+    pwa: 
+      {workboxOptions: {
+        skipWaiting: true
+      },
       // workboxOptions: {}, // only for NON InjectManifest
       manifest: {
         name: 'Jornada',

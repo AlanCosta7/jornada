@@ -16,6 +16,7 @@ const routes = [
       { path: '', redirect: 'projects' },
       { path: 'card', name: 'projects', component: () => import('pages/card/inicio') },
       { path: 'cla', name: 'painel', component: () => import('pages/card/cla') }, 
+      { path: 'loja', name: 'loja', component: () => import('pages/card/loja') }, 
     ]
   }
 ]

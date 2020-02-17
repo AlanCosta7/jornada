@@ -1,5 +1,5 @@
 import { $auth, $firestore, firebase } from 'boot/firebase'
-import { assert, getCommonsIds, mapQuerySnapshot } from '../../shared/helper'
+import { getCommonsIds } from '../../shared/helper'
 import { Loading, QSpinnerOval } from 'quasar'
 
 export const getUserById = ({ }, userId) => {
@@ -65,14 +65,14 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
   return newUser
 }
 
-export const updateJcoins = async ({ rootState }, payload) => {
-  const { uid } = getCommonsIds({ rootState })  
-  const jcoins = await $firestore
-    .collection('users')
-    .doc(uid)
-    .update(payload)
-  return jcoins
-}
+// export const updateJcoins = async ({ rootState }, payload) => {
+//   const { uid } = getCommonsIds({ rootState })  
+//   const jcoins = await $firestore
+//     .collection('users')
+//     .doc(uid)
+//     .update(payload)
+//   return jcoins
+// }
 
 export const blockJornada = async ({ commit }) => {
   Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
@@ -91,6 +91,24 @@ export const blockJornada = async ({ commit }) => {
     });
     Loading.hide()
     return cards
+}
+
+export const addLoja = async ({ commit }) => {
+  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+
+  const loja = await $firestore
+    .collection('loja')
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        commit('setLoja', doc.data())
+      });
+    })
+    .catch(err => {
+      console.log('Error getting documents', err);
+    });
+
+    Loading.hide()
 }
 
 export const userCadastrado = async ({ rootState, commit }) => {
@@ -112,6 +130,27 @@ export const userCadastrado = async ({ rootState, commit }) => {
       console.log('Error getting documents', err);
     });
     Loading.hide()
+}
+
+export const mediaCla = async ({ commit, state }) => {
+  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+
+  var cla = state.cards.cla
+
+  const cards = await $firestore
+    .collection(cla)
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        commit('setCla', doc.data())
+        Loading.hide()
+      });
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+    });
+    Loading.hide()
+    return cards
 }
 
 function handleSuccess(commit, user) {

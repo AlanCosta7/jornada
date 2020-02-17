@@ -1,13 +1,12 @@
 <template>
-  <q-page id="page-inicio" class="bg-blue">
+  <q-page id="page-inicio" :class="`bg-${bgcolor}`">
     <div class="q-pa-sm">
       <div class="column flex flex-center">
         <div v-if="cards.length !== 0">
             <div class="row items-center">
-                <q-icon class="q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(jcoins-cards.saida).toFixed(2)}}</p>
-                <!-- <q-icon class="q-ma-xs" name="bookmark" color="white" /><p class="col q-my-xs text-caption text-white">{{msg}}</p> -->
-
+                <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(jcoins-cards.saida).toFixed(2)}}</p>
                 <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
+
             </div>
             <div class="column flex flex-center q-pa-md">
                 <div v-if="user.photoURL">
@@ -114,6 +113,7 @@
 
 <script>
 import { mapGetters } from "vuex"
+import { Loading, QSpinnerOval } from 'quasar'
 
 export default {
   name: "Iniciopage",
@@ -126,206 +126,39 @@ export default {
     ...mapGetters({
       user: "currentUser",
       cards: "cards",
-      icones: "jornada"
+      cla: "cla",
+      jcoins: "jcoins",
+      icones: "jornada",
+      coordenacao: "coordenacao",
+      aprendizado: "aprendizado",
+      criatividade: "criatividade",
+      negociacao: "negociacao",
+      pensamento: "pensamento",
+      gestao: "gestao",
+      servir: "servir",
+      emocao: "emocao",
+      problema: "problema",
+      decisao: "decisao"
     }),
-    msg() {
-      let msg = "Fé" 
-      let cards = this.cards
-      if (cards.cla === "fe") {
-        msg ='Fé' 
-      } else if (cards.cla === "amor") {
-        msg ='Amor' 
-      } else if (cards.cla === "esperanca" ) {
-        msg ='Esperança' 
-      } else {
-        msg = "Fé" 
-      }
-      return msg    
-    },
-    color() {
+    bgcolor() {
       let color = "fe" 
       let cards = this.cards
       if (cards.cla === "fe") {
-        color = "amber" 
-        this.msg ='Fé' 
+        color = "amber"
       } else if (cards.cla === "amor") {
         color = "red-8"
-        this.msg ='Amor' 
       } else if (cards.cla === "esperanca" ) {
-        color = "green-6" 
-        this.msg ='Esperança' 
+        color = "green-6"
       } else {
         color = "fe"
       }
       return color
-    },
-    coordenacao() {
-        let a = this.cards[0] * 1
-        let b = this.cards[1] * 0.5
-        let c = this.cards[2] * 0.5
-        let d = this.cards[3] * 0.8
-        let e = this.cards[4] * 0.4
-        let f = this.cards[5] * 0.9
-        let g = this.cards[6] * 0.9
-        let h = this.cards[7] * 0.7
-        let i = this.cards[8] * 0.5
-        let j = this.cards[9] * 0.8
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    aprendizado() {
-        let a = this.cards[0] * 0.5
-        let b = this.cards[1] * 1
-        let c = this.cards[2] * 0.9
-        let d = this.cards[3] * 0.5
-        let e = this.cards[4] * 0.6
-        let f = this.cards[5] * 0.5
-        let g = this.cards[6] * 0.5
-        let h = this.cards[7] * 0.9
-        let i = this.cards[8] * 0.9
-        let j = this.cards[9] * 0.7
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    criatividade() {
-        let a = this.cards[0] * 0.5
-        let b = this.cards[1] * 0.9
-        let c = this.cards[2] * 1
-        let d = this.cards[3] * 0.4
-        let e = this.cards[4] * 0.7
-        let f = this.cards[5] * 0.6
-        let g = this.cards[6] * 0.8
-        let h = this.cards[7] * 0.6
-        let i = this.cards[8] * 0.9
-        let j = this.cards[9] * 0.6
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    negociacao() {
-        let a = this.cards[0] * 0.8
-        let b = this.cards[1] * 0.5
-        let c = this.cards[2] * 0.4
-        let d = this.cards[3] * 1
-        let e = this.cards[4] * 0.9
-        let f = this.cards[5] * 0.7
-        let g = this.cards[6] * 0.6
-        let h = this.cards[7] * 0.6
-        let i = this.cards[8] * 0.7
-        let j = this.cards[9] * 0.8
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    pensamento() {
-        let a = this.cards[0] * 0.4
-        let b = this.cards[1] * 0.6
-        let c = this.cards[2] * 0.7
-        let d = this.cards[3] * 0.9
-        let e = this.cards[4] * 1
-        let f = this.cards[5] * 0.7
-        let g = this.cards[6] * 0.7
-        let h = this.cards[7] * 0.9
-        let i = this.cards[8] * 0.5
-        let j = this.cards[9] * 0.6
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    gestao() {
-        let a = this.cards[0] * 0.9
-        let b = this.cards[1] * 0.5
-        let c = this.cards[2] * 0.6
-        let d = this.cards[3] * 0.7
-        let e = this.cards[4] * 0.7
-        let f = this.cards[5] * 1
-        let g = this.cards[6] * 0.8
-        let h = this.cards[7] * 0.6
-        let i = this.cards[8] * 0.5
-        let j = this.cards[9] * 0.7
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    servir() {
-        let a = this.cards[0] * 0.9
-        let b = this.cards[1] * 0.5
-        let c = this.cards[2] * 0.8
-        let d = this.cards[3] * 0.6
-        let e = this.cards[4] * 0.7
-        let f = this.cards[5] * 0.8
-        let g = this.cards[6] * 1
-        let h = this.cards[7] * 0.5
-        let i = this.cards[8] * 0.6
-        let j = this.cards[9] * 0.6
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    emocao() {
-        let a = this.cards[0] * 0.7
-        let b = this.cards[1] * 0.9
-        let c = this.cards[2] * 0.6
-        let d = this.cards[3] * 0.6
-        let e = this.cards[4] * 0.9
-        let f = this.cards[5] * 0.6
-        let g = this.cards[6] * 0.5
-        let h = this.cards[7] * 1
-        let i = this.cards[8] * 0.6
-        let j = this.cards[9] * 0.6
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    problema() {
-        let a = this.cards[0] * 0.5
-        let b = this.cards[1] * 0.9
-        let c = this.cards[2] * 0.9
-        let d = this.cards[3] * 0.7
-        let e = this.cards[4] * 0.5
-        let f = this.cards[5] * 0.5
-        let g = this.cards[6] * 0.6
-        let h = this.cards[7] * 0.6
-        let i = this.cards[8] * 1
-        let j = this.cards[9] * 0.8
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    decisao() {
-        let a = this.cards[0] * 0.8
-        let b = this.cards[1] * 0.7
-        let c = this.cards[2] * 0.6
-        let d = this.cards[3] * 0.8
-        let e = this.cards[4] * 0.6
-        let f = this.cards[5] * 0.7
-        let g = this.cards[6] * 0.6
-        let h = this.cards[7] * 0.6
-        let i = this.cards[8] * 0.8
-        let j = this.cards[9] * 0.8
-        
-        let ptn = (a+b+c+d+e+f+g+h+i+j)/70
-        
-        return ptn/10
-    },
-    jcoins() {
-        let jcoins = this.coordenacao + this.aprendizado + this.criatividade + this.negociacao + this.pensamento + this.gestao + this.servir + this.emocao + this.problema + this.decisao
-        return jcoins * 7
     }
   },
-  mounted() {
-        this.$store.dispatch('userCadastrado')
+  async mounted() {
+    Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+    this.atualizar()
+    Loading.hide()
   },
   methods: {
     iniciar() {
@@ -335,8 +168,9 @@ export default {
     },
     async atualizar() {
         await this.$store.dispatch('userCadastrado') 
-        let jcoins = {jcoins: this.jcoins}
-        await this.$store.dispatch('updateJcoins', jcoins) 
+        await this.$store.dispatch('blockJornada')
+        await this.$store.dispatch('mediaCla')
+        await this.$store.dispatch('addLoja')
     }
   },
 };

@@ -1,4 +1,4 @@
-import firebaseui from 'firebaseui'
+import * as firebaseui from 'firebaseui'
 import { $auth } from './firebase'
 
 export default ({ Vue }) => {

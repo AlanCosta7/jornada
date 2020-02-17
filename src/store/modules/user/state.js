@@ -1,6 +1,8 @@
 export const state = {
   currentUser: null,
   cards: [],
+  cla: [],
+  loja: [],
   block: [],
   jornada: [
     {

@@ -3,33 +3,35 @@
     <q-header elevated>
       <q-toolbar class="bg-white">
         <q-toolbar-title class="text-grey-10 text-weight-bolder">
-          Jornada
+          {{msg}}
         </q-toolbar-title>
         <template v-if="cards.length !== 0">
           <div>
-            <q-btn round icon="bookmark" :color="color">
-            </q-btn>
-            <q-menu style="width: 150px;">
-              <q-list class="no-wrap">
-                <q-item :to="{ name: 'projects' }" exact>
+            <q-btn round flat icon="bookmark" :color="bgcolor">
+            <q-menu >
+              <q-list style="width: 150px;" class="no-wrap">
+                <q-item clickable :to="{ name: 'projects' }">
                   <q-item-section>
-                    <q-item-label label>
                       Dashboard
-                    </q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item :to="{ name: 'painel' }" exact>
+                <q-item clickable :to="{ name: 'painel' }">
                   <q-item-section>
-                    <q-item-label label>
                       Desafio
-                    </q-item-label>
                   </q-item-section>
                 </q-item>
-                <q-item link>
+                <q-item clickable :to="{ name: 'loja' }">
+                  <q-item-section>
+                      Loja
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable>
                   <q-btn color="red" flat label="Sair" @click="logout()" />
                 </q-item>
               </q-list>
             </q-menu>
+            </q-btn>
           </div>
         </template>
       </q-toolbar>
@@ -75,26 +77,32 @@ export default {
       cards: "cards",
       jornada: "jornada"
     }),
-    color() {
-      let color = "orange" 
+    msg() {
+      let grupo = ''
       let cards = this.cards
       if (cards.cla === "fe") {
-        color = "orange" 
-        this.msg ='Fé' 
+        grupo = "Guardiões"
+      } else if (cards.cla === "amor") {
+        grupo = "Herdeiros"
+      } else if (cards.cla === "esperanca" ) {
+        grupo = "Gladiadores"
+      }
+      return grupo        
+    },
+    bgcolor() {
+      let color = "fe" 
+      let cards = this.cards
+      if (cards.cla === "fe") {
+        color = "amber" 
       } else if (cards.cla === "amor") {
         color = "red-8"
-        this.msg ='Amor' 
       } else if (cards.cla === "esperanca" ) {
-        color = "green-6" 
-        this.msg ='Esperança' 
+        color = "green-6"
       } else {
-        color = "orange"
+        color = "fe"
       }
       return color
     },
-  },
-  mounted() {
-    this.$store.dispatch('userCadastrado')
   },
   methods: {
     sair() {

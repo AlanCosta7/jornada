@@ -36,8 +36,8 @@ module.exports = function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      // iconSet: 'ionicons-v4', // Quasar icon set
-      // lang: 'de', // Quasar language pack
+      iconSet: 'material-icons', // Quasar icon set
+      lang: 'pt-br', // Quasar language pack
 
       // Possible values for "all":
       // * 'auto' - Auto-import needed Quasar components & directives
@@ -66,9 +66,9 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',
-      // showProgress: false,
-      // gzip: true,
-      // analyze: true,
+      showProgress: false,
+      gzip: false,
+      analyze: false,
       // preloadChunks: false,
       // extractCSS: false,
 
@@ -94,11 +94,9 @@ module.exports = function (ctx) {
     },
 
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
-    pwa: 
-      {workboxOptions: {
-        skipWaiting: true
-      },
-      // workboxOptions: {}, // only for NON InjectManifest
+    pwa: {
+      workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
+      workboxOptions: {}, // only for GenerateSW
       manifest: {
         name: 'Jornada',
         short_name: 'Jornada',

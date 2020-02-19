@@ -1,5 +1,7 @@
 export const state = {
   currentUser: null,
+  usuarios: [],
+  ranking: [],
   cards: [],
   cla: [],
   loja: [],

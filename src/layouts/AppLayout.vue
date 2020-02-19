@@ -7,7 +7,7 @@
         </q-toolbar-title>
         <template v-if="cards.length !== 0">
           <div>
-            <q-btn round flat icon="bookmark" :color="bgcolor">
+            <q-btn round flat icon="menu" color="black">
             <q-menu >
               <q-list style="width: 150px;" class="no-wrap">
                 <q-item clickable :to="{ name: 'projects' }">
@@ -18,6 +18,11 @@
                 <q-item clickable :to="{ name: 'painel' }">
                   <q-item-section>
                       Desafio
+                  </q-item-section>
+                </q-item>
+                <q-item clickable :to="{ name: 'ranking' }">
+                  <q-item-section>
+                      Ranking
                   </q-item-section>
                 </q-item>
                 <q-item clickable :to="{ name: 'loja' }">

@@ -4,9 +4,8 @@
       <div class="column flex flex-center">
         <div v-if="cards.length !== 0">
             <div class="row items-center">
-                <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(jcoins-cards.saida).toFixed(2)}}</p>
+                <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(cards.jcoins).toFixed(2)}}</p>
                 <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
-
             </div>
             <div class="column flex flex-center q-pa-md">
                 <div v-if="user.photoURL">
@@ -127,7 +126,6 @@ export default {
       user: "currentUser",
       cards: "cards",
       cla: "cla",
-      jcoins: "jcoins",
       icones: "jornada",
       coordenacao: "coordenacao",
       aprendizado: "aprendizado",

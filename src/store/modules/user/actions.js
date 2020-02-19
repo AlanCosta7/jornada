@@ -1,3 +1,4 @@
+import { pick } from 'lodash-es'
 import { $auth, $firestore, firebase } from 'boot/firebase'
 import { getCommonsIds } from '../../shared/helper'
 import { Loading, QSpinnerOval } from 'quasar'
@@ -65,14 +66,46 @@ export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
   return newUser
 }
 
-// export const updateJcoins = async ({ rootState }, payload) => {
-//   const { uid } = getCommonsIds({ rootState })  
-//   const jcoins = await $firestore
-//     .collection('users')
-//     .doc(uid)
-//     .update(payload)
-//   return jcoins
-// }
+export const updateUser = async ({ commit }) => {
+  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+
+  const cards = await $firestore
+    .collection('users')
+    .orderBy("desempenho", "desc")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+          commit('setUsuarios', doc.data())
+          Loading.hide()
+      });
+    })
+    .catch((err) => {
+      console.log('Error getting documents', err);
+    });
+  Loading.hide()
+  return cards
+}
+
+export const updateJcoins = async ({ rootState }, payload) => {
+  const validKeys = ['jcoins']  
+  const newCompra = pick(payload, validKeys)
+  const { uid } = getCommonsIds({ rootState })  
+  const jcoins = await $firestore
+    .collection('users')
+    .doc(uid)
+    .update(newCompra)
+  return jcoins
+}
+
+export const setComprar = async ({ rootState }, payload) => {
+
+  const { uid } = getCommonsIds({ rootState })  
+  const jcoins = await $firestore
+    .collection('comprado')
+    .doc(uid)
+    .set(payload)
+  return jcoins
+}
 
 export const blockJornada = async ({ commit }) => {
   Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
@@ -151,6 +184,25 @@ export const mediaCla = async ({ commit, state }) => {
     });
     Loading.hide()
     return cards
+}
+
+export const updateUsuario = async ({ rootState }, payload) => {
+  var uid = payload.uid
+  var desempenho = {desempenho: payload.desempenho}
+  console.log('newCompra', desempenho)
+  const user = await $firestore
+    .collection('users')
+    .doc(uid)
+    .update(desempenho)
+  return user
+}
+
+export const removeUsuario = async ({ rootState }, payload) => {
+  const user = await $firestore
+    .collection('users')
+    .doc(payload)
+    .delete()
+  return user
 }
 
 function handleSuccess(commit, user) {

@@ -1,7 +1,9 @@
 <template>
-  <q-page class="flex flex-center" :class="`bg-${bgcolor}`">
-    <div class="q-pa-sm">
-      <div class="row items-center z-top">
+  <q-page :class="`bg-${bgcolor}`">
+    <div class="row items-center q-pa-sm">
+      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
+      <p class="col q-my-xs text-caption text-white">J${{cards.jcoins}}</p>
+      <div class="col"></div>
         <q-btn
           icon="refresh"
           size="sm"
@@ -11,7 +13,6 @@
           @click="atualizar"
           color="white"
         ></q-btn>
-      </div>
     </div>
     <q-carousel
       v-model="slide"
@@ -20,7 +21,7 @@
       animated
       height="540px"
       control-color="white"
-      class="text-white fit-height"
+      class="text-white"
       :class="`bg-${bgcolor}`"
     >
       <q-carousel-slide :name="slide" class="column no-wrap flex flex-center">
@@ -40,7 +41,7 @@
           </q-avatar>
         </q-circular-progress>
 
-        <q-carousel-control position="bottom-right" :offset="[18, 5]" class="q-gutter-xs z-top">
+        <q-carousel-control position="bottom-right" :offset="[18, 5]" class="q-gutter-xs">
           <q-btn
             push
             round
@@ -94,7 +95,6 @@ export default {
       cards: "cards",
       mediaCla: "mediaCla",
       cla: "cla",
-      jcoins: "jcoins",
       jornada: "jornada",
       block: "block"
     }),

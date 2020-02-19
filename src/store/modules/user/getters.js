@@ -6,6 +6,7 @@ export const cla = state => state.cla
 export const jornada = state => state.jornada
 export const block = state => state.block
 export const loja = state => state.loja
+export const usuarios = state => state.usuarios
 
 export const coordenacao = getters => {
     let a = getters.cards[0] * 1
@@ -181,23 +182,4 @@ export const mediaCla = (state, getters) => {
     
     let ptn = (a+b+c+d+e+f+g+h+i+j)
     return ptn
-}
-
-export const jcoins = (state, getters) => {
-    let a = getters.cards[0]
-    let b = getters.cards[1]
-    let c = getters.cards[2]
-    let d = getters.cards[3]
-    let e = getters.cards[4]
-    let f = getters.cards[5]
-    let g = getters.cards[6]
-    let h = getters.cards[7]
-    let i = getters.cards[8]
-    let j = getters.cards[9]
-    
-    let ptn = (a+b+c+d+e+f+g+h+i+j)
-    let mediaCla = getters.mediaCla
-    let valor = (Number((ptn + mediaCla)/2) / 10) * 0.7
-    console.log('OK jcoins', valor)
-    return valor
 }

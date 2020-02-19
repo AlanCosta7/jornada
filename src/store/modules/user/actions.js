@@ -86,8 +86,13 @@ export const updateUser = async ({ commit }) => {
   return cards
 }
 
+
+export const salvarUsuario = async ({ commit }, payload) => {
+  commit('setSalvarUsuario', payload)
+}
+
 export const updateJcoins = async ({ rootState }, payload) => {
-  const validKeys = ['jcoins']  
+  const validKeys = ['saida']  
   const newCompra = pick(payload, validKeys)
   const { uid } = getCommonsIds({ rootState })  
   const jcoins = await $firestore
@@ -98,11 +103,10 @@ export const updateJcoins = async ({ rootState }, payload) => {
 }
 
 export const setComprar = async ({ rootState }, payload) => {
-
-  const { uid } = getCommonsIds({ rootState })  
+ 
   const jcoins = await $firestore
     .collection('comprado')
-    .doc(uid)
+    .doc()
     .set(payload)
   return jcoins
 }
@@ -188,12 +192,12 @@ export const mediaCla = async ({ commit, state }) => {
 
 export const updateUsuario = async ({ rootState }, payload) => {
   var uid = payload.uid
-  var desempenho = {desempenho: payload.desempenho}
-  console.log('newCompra', desempenho)
+  var jcoins = {jcoins: payload.jcoins}
+  console.log('newCompra', jcoins)
   const user = await $firestore
     .collection('users')
     .doc(uid)
-    .update(desempenho)
+    .update(jcoins)
   return user
 }
 

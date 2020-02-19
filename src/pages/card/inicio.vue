@@ -4,7 +4,7 @@
       <div class="column flex flex-center">
         <div v-if="cards.length !== 0">
             <div class="row items-center">
-                <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(cards.jcoins).toFixed(2)}}</p>
+                <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" /><p class="col q-my-xs text-caption text-white">J${{(cards.desempenho*0.07).toFixed(2)-cards.saida}}</p>
                 <q-btn icon="refresh" size="sm" class="absolute-top-right q-ma-sm" push flat @click="atualizar" color="white"></q-btn>
             </div>
             <div class="column flex flex-center q-pa-md">
@@ -153,11 +153,6 @@ export default {
       return color
     }
   },
-  async mounted() {
-    Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-    this.atualizar()
-    Loading.hide()
-  },
   methods: {
     iniciar() {
         const user = this.user
@@ -165,10 +160,10 @@ export default {
         this.$store.dispatch('userCadastrado')
     },
     async atualizar() {
-        await this.$store.dispatch('userCadastrado') 
-        await this.$store.dispatch('blockJornada')
-        await this.$store.dispatch('mediaCla')
-        await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('blockJornada')
+      await this.$store.dispatch('mediaCla')
+      await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('userCadastrado')
     }
   },
 };

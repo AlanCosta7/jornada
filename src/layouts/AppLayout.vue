@@ -76,6 +76,13 @@ export default {
       inception: false,
     };
   },
+  async mounted() {
+      await this.$store.dispatch('userCadastrado') 
+      await this.$store.dispatch('blockJornada')
+      await this.$store.dispatch('mediaCla')
+      await this.$store.dispatch('addLoja')
+      await this.$store.dispatch("updateUser")
+  },
   computed: {
     ...Vuex.mapGetters({
       currentUser: "currentUser",

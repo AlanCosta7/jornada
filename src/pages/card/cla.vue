@@ -2,7 +2,7 @@
   <q-page :class="`bg-${bgcolor}`">
     <div class="row items-center q-pa-sm">
       <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
-      <p class="col q-my-xs text-caption text-white">J${{cards.jcoins}}</p>
+      <p class="col q-my-xs text-caption text-white">J${{(cards.desempenho*0.07).toFixed(2)-(cards.saida)}}</p>
       <div class="col"></div>
         <q-btn
           icon="refresh"
@@ -116,17 +116,12 @@ export default {
       return color;
     }
   },
-  async mounted() {
-    Loading.show({ spinner: QSpinnerOval, message: "Atualizando..." });
-    this.atualizar();
-    Loading.hide();
-  },
   methods: {
     async atualizar() {
-        await this.$store.dispatch('userCadastrado') 
-        await this.$store.dispatch('blockJornada')
-        await this.$store.dispatch('mediaCla')
-        await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('blockJornada')
+      await this.$store.dispatch('mediaCla')
+      await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('userCadastrado')
     },
     previous() {
       let slide = this.slide;

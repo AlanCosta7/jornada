@@ -24,3 +24,7 @@ export const setCla = (state, payload) => {
 export const setUsuarios = (state, payload) => {
   state.usuarios.push(payload)
 }
+
+export const setSalvarUsuario = (state, payload) => {
+  state.usuarios = payload
+}

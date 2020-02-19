@@ -1,8 +1,8 @@
 <template>
   <q-page class="column">
     <div class="row items-center q-pa-sm">
-      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
-      <p class="col q-my-xs text-caption text-white">J${{cards.jcoins}}</p>
+      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="black" />
+      <p class="col q-my-xs text-caption text-black">J${{(cards.desempenho*0.07).toFixed(2)-(cards.saida)}}</p>
       <q-btn
         icon="refresh"
         size="sm"
@@ -10,7 +10,7 @@
         push
         flat
         @click="atualizar"
-        color="white"
+        color="black"
       ></q-btn>
     </div>
 
@@ -19,6 +19,7 @@
         <div class="row">
             <q-item-label class="col" header>Ranking</q-item-label>
             <q-item-label class="col-auto" header>Desempenho</q-item-label>
+            <!-- <q-item-label class="col-auto" header>jcoins</q-item-label> -->
         </div>
         <q-item class="row items-center" v-ripple v-for="rank in usuarios" :key="rank.index">
           <q-item-section class="col-1" >
@@ -85,6 +86,14 @@
               <q-input v-model="item.desempenho" dense autofocus counter />
             </q-popup-edit> -->
         </q-item-section>
+          <!-- <q-item-section class="col-2"
+            side
+            top
+          >{{rank.jcoins}}
+            <q-popup-edit v-model="rank.jcoins" title="Editar desempenho">
+              <q-input v-model="rank.jcoins" dense autofocus counter />
+            </q-popup-edit>
+        </q-item-section> -->
         </q-item>
       </q-list>
     </div>
@@ -105,11 +114,6 @@ export default {
         item: {}
     };
   },
-  async mounted() {
-    Loading.show({ spinner: QSpinnerOval, message: "Atualizando..." });
-    this.atualizar();
-    Loading.hide();
-  },
   computed: {
     ...mapGetters({
       currentUser: "currentUser",
@@ -119,10 +123,16 @@ export default {
     })
   },
   methods: {
-    async atualizar() {
-      await this.$store.dispatch("userCadastrado");
-      await this.$store.dispatch("mediaCla");
-      await this.$store.dispatch("updateUser");
+    async atualizar() {      
+      await this.$store.dispatch('blockJornada')
+      await this.$store.dispatch('mediaCla')
+      await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('userCadastrado')
+    },
+    async cleamRanking() {
+        var usuarios = this.usuarios
+        usuarios = {}
+      await this.$store.dispatch("salvarUsuario", usuarios);
     },
     async removeUsuario(rank){
       var uid = rank.id
@@ -130,7 +140,7 @@ export default {
     },
     async salvarUsuarios(rank) {
         var item = {
-            desempenho: Number(this.item.desempenho),
+            jcoins: Number(rank.jcoins),
             uid: rank.id
         }
 

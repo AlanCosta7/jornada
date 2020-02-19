@@ -2,7 +2,7 @@
   <q-page class="column bg-black" >
     <div class="row items-center q-pa-sm">
       <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
-      <p class="col q-my-xs text-caption text-white">J${{cards.jcoins}}</p>
+      <p class="col q-my-xs text-caption text-white">J${{(cards.desempenho*0.07).toFixed(2)-cards.saida}}</p>
         <q-btn
           icon="refresh"
           size="sm"
@@ -103,40 +103,41 @@ export default {
       cards: "cards"
     }),
   },
-  async mounted() {
-    Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-    this.atualizar()
-    Loading.hide()
-  },
   methods: {
     async atualizar() {
-        await this.$store.dispatch('userCadastrado') 
-        await this.$store.dispatch('blockJornada')
-        await this.$store.dispatch('mediaCla')
-        await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('blockJornada')
+      await this.$store.dispatch('mediaCla')
+      await this.$store.dispatch('addLoja')
+      await this.$store.dispatch('userCadastrado')
     },
-    async comprar(item) {
-      let cards = this.cards
-      if (item > cards.jcoins) {
+    async comprar(value) {
+      var saida = this.cards.saida
+      let cardsjcoins = Number(this.cards.desempenho*0.07)
+      var result = cardsjcoins - saida
+      this.item = value
+      if (this.item > result) {
         this.dialog = true
       } else {
-        var result = cards.jcoins - item
-        var jcoins = {jcoins: result}
-        this.item = jcoins
+        this.item = value
         this.comprarItemDialog = true
       }
     },
     async comprarItem () {
-      var item = this.item
+      let item = this.item
       var user = this.currentUser
       var loja = this.loja
       var slide = this.slide
+      var cards = this.cards
+      var result = Number(item) + Number(cards.saida)
+      let saida = {
+        saida: result
+      }
 
       let itemComprado = {
         user: user,
         item: loja[slide]
       }
-      await this.$store.dispatch('updateJcoins', item)
+      await this.$store.dispatch('updateJcoins', saida)
       await this.$store.dispatch('setComprar', itemComprado)
 
       this.atualizar()

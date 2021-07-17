@@ -1,19 +1,5 @@
 <template>
   <q-page class="column">
-    <div class="row items-center q-pa-sm">
-      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="black" />
-      <p class="col q-my-xs text-caption text-black">J${{(cards.desempenho*0.07).toFixed(2)-(cards.saida)}}</p>
-      <q-btn
-        icon="refresh"
-        size="sm"
-        class="absolute-top-right q-ma-sm"
-        push
-        flat
-        @click="atualizar"
-        color="black"
-      ></q-btn>
-    </div>
-
     <div class="q-pa-md q-gutter-md">
       <q-list bordered class="rounded-borders" style="max-width: 320px">
         <div class="row">
@@ -34,7 +20,7 @@
           <q-item-section class="col q-mx-sm">
             <q-item-label lines="1">{{rank.name}}</q-item-label>
           </q-item-section>
-<!-- 
+<!--
             <q-btn label="Salvar" color="positive" @click="salvarUsuarios(rank)"></q-btn>
             <q-btn label="Remover" color="negative" @click="removeUsuario(rank)"></q-btn>
 
@@ -115,20 +101,11 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      currentUser: "currentUser",
-      cards: "cards",
-      cla: "cla",
-      usuarios: "usuarios"
-    })
+    ...Vuex.mapState([
+      'currentUser',
+    ])
   },
   methods: {
-    async atualizar() {      
-      await this.$store.dispatch('blockJornada')
-      await this.$store.dispatch('mediaCla')
-      await this.$store.dispatch('addLoja')
-      await this.$store.dispatch('userCadastrado')
-    },
     async cleamRanking() {
         var usuarios = this.usuarios
         usuarios = {}

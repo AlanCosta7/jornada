@@ -7,6 +7,7 @@ import 'firebase/storage' // eslint-disable-line
 import 'firebase/analytics' // eslint-disable-line
 import 'firebase/performance' // eslint-disable-line
 import { LocalStorage } from 'quasar'
+import { FireSQL } from 'firesql'
 
 const firebaseConfig = {
   apiKey: "AIzaSyABYsQOsyuiN4tZRWek3-HUKP6yJ4oWnLg",
@@ -25,7 +26,10 @@ const $fbApp = firebase.initializeApp(firebaseConfig)
 const $auth = $fbApp.auth()
 // const $db = firebase.database()
 const $firestore = firebase.firestore()
-const $functions = firebase.functions()
+const app = firebase.app();
+
+const fireSQL = new FireSQL($firestore);
+const $functions = app.functions("southamerica-east1");
 const $storage = firebase.storage()
 firebase.performance()
 const $analytics = firebase.analytics()
@@ -49,7 +53,7 @@ export default ({ Vue, store }) => {
   $auth.onAuthStateChanged(user => {
     if (user) {
       $analytics.logEvent('login')
-      const { uid, email, emailVerified, displayName, photoURL, providerData } = user      
+      const { uid, email, emailVerified, displayName, photoURL, providerData } = user
       $analytics.setUserId(uid)
 
       const providerId = providerData && providerData.length > 0 ? providerData[0].providerId : user.providerId;
@@ -61,4 +65,4 @@ export default ({ Vue, store }) => {
   })
 }
 
-export { firebase, $analytics, $fbApp, $auth, $firestore, $functions, $storage }
+export { firebase, $analytics, $fbApp, $auth, $firestore, $functions, $storage, fireSQL }

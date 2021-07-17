@@ -1,141 +1,185 @@
 <template>
-  <q-page :class="`bg-${bgcolor}`">
-    <div class="row items-center q-pa-sm">
-      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
-      <p class="col q-my-xs text-caption text-white">J${{(cards.desempenho*0.07).toFixed(2)-(cards.saida)}}</p>
-      <div class="col"></div>
-        <q-btn
-          icon="refresh"
-          size="sm"
-          class="absolute-top-right q-ma-sm"
-          push
-          flat
-          @click="atualizar"
-          color="white"
-        ></q-btn>
-    </div>
+  <q-page class="q-pa-none q-ma-none fit flex flex-center">
     <q-carousel
+      v-if="myDesafio.length !== 0"
       v-model="slide"
       transition-prev="slide-right"
       transition-next="slide-left"
       animated
-      height="540px"
-      control-color="white"
-      class="text-white"
-      :class="`bg-${bgcolor}`"
+      swipeable
+      ref="carousel"
+      infinite
+      control-color="black"
+      style="width: 100vw; height:84vh; max-width: 600px"
+      class="text-black"
     >
-      <q-carousel-slide :name="slide" class="column no-wrap flex flex-center">
-        <q-circular-progress
-          show-value
-          class="q-ma-md"
-          :value="desempenho"
-          size="220px"
-          :thickness="0.25"
-          color="primary text-center"
-          track-color="grey-3"
-          center-color="grey-3"
+      <q-carousel-slide
+        v-for="(item, index) in myDesafio"
+        :key="index"
+        :name="index"
+        class="column no-wrap full-width row justify-start"
+      >
+        <q-img
+          :src="item.capa"
+          class="row justify-center"
+          width="90vw"
+          height="100px"
+          style="max-width: 600px"
+          spinner-color="primary"
+          spinner-size="82px"
         >
-          <q-avatar size="120px">
-            <img :src="jornada[slide].icone" v-if="block[slide]" alt />
-            <img src="../../assets/icons/cadeado.svg" v-if="!block[slide]" alt />
-          </q-avatar>
-        </q-circular-progress>
+          <template v-slot:error>
+            <div
+              class="absolute-full flex flex-center bg-black text-white"
+            ></div>
+          </template>
+        </q-img>
 
-        <q-carousel-control position="bottom-right" :offset="[18, 5]" class="q-gutter-xs">
-          <q-btn
-            push
-            round
-            dense
-            color="amber"
-            text-color="black"
-            icon="arrow_left"
-            @click="previous()"
-          />
-          <q-btn
-            push
-            round
-            dense
-            color="amber"
-            text-color="black"
-            icon="arrow_right"
-            @click="next()"
-          />
-        </q-carousel-control>
-        <div class="q-ma-md" v-if="block[slide]">
-          <p class="text-weight-bolder text-h6">{{jornada[slide].titulo}}</p>
-          <p class="text-weight-bold">Mês: {{jornada[slide].mes}} | Desempenho: {{desempenho}}</p>
-          <div>Nota Pessoal: {{cards[slide]}}</div>
-          <div>Nota Cla: {{cla[slide]}}</div>
-          <p>Desafio: {{jornada[slide].desafio}}</p>
+        <div class="q-ma-md full-width">
+          <div class="q-mb-md">
+            <div class="text-weight-bolder text-h6">{{ item.titulo }}</div>
+            <div class="text-weight-bold">{{ item.descricao }}</div>
+          </div>
+          <div class="text-bold">Habilidades:</div>
+          <div class="q-gutter-sm text-caption">
+            <div>
+              <div>Criatividade</div>
+              <q-linear-progress
+                size="10px"
+                :value="parseInt(item.habilidades.criatividade) / 10"
+              />
+            </div>
+            <div>
+              <div>Trabalho em equipe</div>
+              <q-linear-progress
+                size="10px"
+                :value="parseInt(item.habilidades.trabalhoEmEquipe) / 10"
+              />
+            </div>
+            <div>
+              <div>Inteligência emocional</div>
+              <q-linear-progress
+                size="10px"
+                :value="parseInt(item.habilidades.inteligenciaEmocional) / 10"
+              />
+            </div>
+            <div>
+              <div>Liderança</div>
+              <q-linear-progress
+                size="10px"
+                :value="parseInt(item.habilidades.lideranca) / 10"
+              />
+            </div>
+            <div>
+              <div>Tomada de decisão</div>
+              <q-linear-progress
+                size="10px"
+                :value="parseInt(item.habilidades.tomadaDeDecisao) / 10"
+              />
+            </div>
+          </div>
         </div>
-        <div class="q-ma-md" v-if="!block[slide]">
-          <p class="text-weight-bolder text-h6">Fase bloqueada</p>
-          <p>Mês: {{jornada[slide].mes}} | Desempenho: 0</p>
-          <p>Desafio: O desafio será revelado pelo líder do clã. Aguarde a liberação dessa fase.</p>
-        </div>
+
+        <div v-if="currentUser" class="container">Meu Desempenho: {{ getPontos() }}pt</div>
       </q-carousel-slide>
+
+      <template v-slot:control>
+        <q-carousel-control
+          position="bottom-right"
+          :offset="[18, 48]"
+          class="q-gutter-xs"
+        >
+            <q-btn
+              push
+              round
+              dense
+              color="amber"
+              text-color="black"
+              icon="arrow_left"
+              @click="$refs.carousel.previous()"
+            />
+            <q-btn
+              push
+              round
+              dense
+              color="amber"
+              text-color="black"
+              icon="arrow_right"
+              @click="$refs.carousel.next()"
+            />
+        </q-carousel-control>
+      </template>
     </q-carousel>
+
+    <div v-if="myDesafio.length == 0" class="row justify-center q-pa-md">
+      <q-img
+        src="https://firebasestorage.googleapis.com/v0/b/jornada-jovem.appspot.com/o/icon-jornada%2Ficonfinder_Castle_2913096.svg?alt=media&token=7665f89f-c855-408a-9cc1-e25ab48b88eb"
+        :ratio="1"
+        width="70vw"
+        spinner-color="primary"
+        spinner-size="82px"
+      />
+      <div>
+        <h5 class="text-center">
+          Ainda não há desafios disponíveis. Aguarde novidades!
+        </h5>
+      </div>
+      <q-btn
+        color="black"
+        outline
+        icon="chevron_left"
+        label="voltar"
+        @click="onVoltar"
+      />
+    </div>
   </q-page>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { Loading, QSpinnerOval } from 'quasar'
+import Vuex from "vuex";
 
 export default {
   name: "PageCla",
   data() {
     return {
-      slide: 0
+      slide: 0,
     };
   },
   computed: {
-    ...mapGetters({
-      user: "currentUser",
-      cards: "cards",
-      mediaCla: "mediaCla",
-      cla: "cla",
-      jornada: "jornada",
-      block: "block"
-    }),
-    desempenho() {
-      var cards = this.cards;
-      var cla = this.cla;
-      var slide = this.slide;
-      var result = (cards[slide] + cla[slide]) / 2;
-      return result;
-    },
-    bgcolor() {
-      let color = "red-8";
-      let block = this.block[this.slide];
-      if (block) {
-        color = "positive";
-      } else {
-        color = "red-8";
-      }
-      return color;
-    }
+    ...Vuex.mapState(["currentUser", "selectProject", "myDesafio", "pontos"]),
   },
   methods: {
-    async atualizar() {
-      await this.$store.dispatch('blockJornada')
-      await this.$store.dispatch('mediaCla')
-      await this.$store.dispatch('addLoja')
-      await this.$store.dispatch('userCadastrado')
+    getPontos() {
+      var uid = this.currentUser.uid;
+      let pontos = this.pontos;
+      var req = pontos.find(function getId(member) {
+        const result = member.uid === uid;
+        if (result) {
+          return member.pontos;
+        } else return 0;
+      });
+      if (req) {
+        return req.pontos;
+      }
+    },
+    onVoltar() {
+      this.$router.push({ name: "inicio" });
     },
     previous() {
-      let slide = this.slide;
-      if (slide > 0) {
-        this.slide = this.slide - 1;
-      }
+      this.slide = this.slide - 1;
+
+      console.log(this.slide);
     },
     next() {
-      let slide = this.slide;
-      if (slide < 9) {
+      // this.slide++
+      if (this.slide == this.myDesafio.length - 1) {
+        return null;
+      } else {
         this.slide = this.slide + 1;
       }
-    }
-  }
+      console.log(this.slide, this.myDesafio.length);
+    },
+  },
 };
 </script>
 

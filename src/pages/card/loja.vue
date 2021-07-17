@@ -1,18 +1,5 @@
 <template>
   <q-page class="column bg-black" >
-    <div class="row items-center q-pa-sm">
-      <q-icon class="col-auto q-ma-xs" name="monetization_on" color="white" />
-      <p class="col q-my-xs text-caption text-white">J${{(cards.desempenho*0.07).toFixed(2)-cards.saida}}</p>
-        <q-btn
-          icon="refresh"
-          size="sm"
-          class="absolute-top-right q-ma-sm"
-          push
-          flat
-          @click="atualizar"
-          color="white"
-        ></q-btn>
-    </div>
     <q-carousel
       v-model="slide"
       transition-prev="slide-right"
@@ -22,7 +9,7 @@
       control-color="white"
       class="text-white "
     >
-      <q-carousel-slide :name="slide" v-if="loja" :img-src="loja[slide].img" class="column no-wrap"> 
+      <q-carousel-slide :name="slide" v-if="loja" :img-src="loja[slide].img" class="column no-wrap">
         <q-carousel-control position="bottom-right" :offset="[18, 5]" class="q-gutter-xs btn-control">
           <q-btn
             push
@@ -97,19 +84,13 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      currentUser: 'currentUser',
-      loja: "loja",
-      cards: "cards"
-    }),
+    ...Vuex.mapState([
+      'currentUser',
+      'loja',
+      'cards'
+    ]),
   },
   methods: {
-    async atualizar() {
-      await this.$store.dispatch('blockJornada')
-      await this.$store.dispatch('mediaCla')
-      await this.$store.dispatch('addLoja')
-      await this.$store.dispatch('userCadastrado')
-    },
     async comprar(value) {
       var saida = this.cards.saida
       let cardsjcoins = Number(this.cards.desempenho*0.07)
@@ -140,8 +121,7 @@ export default {
       await this.$store.dispatch('updateJcoins', saida)
       await this.$store.dispatch('setComprar', itemComprado)
 
-      this.atualizar()
-        this.comprarItemDialog = false
+      this.comprarItemDialog = false
     },
     previous() {
       let slide = this.slide;

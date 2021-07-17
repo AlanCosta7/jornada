@@ -4,20 +4,25 @@ const routes = [
     path: '/',
     component: () => import('layouts/MyLayout'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },      
+      { path: '', name: 'landpage', component: () => import('pages/Index.vue') },
+      { path: 'projetos', name: 'projetos', component: () => import('pages/projetos/Index.vue') },
       { path: 'login', component: () => import('pages/auth/login') },
-      { path: 'politica', name: 'politica', component: () => import('pages/legal/Politica_privacidade') }
+      { path: 'politica', name: 'politica', component: () => import('pages/legal/Politica_privacidade') },
     ]
   },
   {
-    path: '/app',
+    path: '/:nickname',
     component: () => import('layouts/AppLayout'),
     children: [
-      { path: '', redirect: 'projects' },
-      { path: 'card', name: 'projects', component: () => import('pages/card/inicio') },
-      { path: 'cla', name: 'painel', component: () => import('pages/card/cla') }, 
-      { path: 'loja', name: 'loja', component: () => import('pages/card/loja') }, 
-      { path: 'ranking', name: 'ranking', component: () => import('pages/card/ranking') }, 
+      { path: '', name: 'inicio', component: () => import('pages/card/inicio') },
+      {
+        path: "cadastro-perfil",
+        name: "cadastro-perfil",
+        component: () => import("pages/auth/base-cadastro-user")
+      },
+      { path: 'cla', name: 'painel', component: () => import('pages/card/cla') },
+      { path: 'loja', name: 'loja', component: () => import('pages/card/loja') },
+      { path: 'ranking', name: 'ranking', component: () => import('pages/card/ranking') },
     ]
   }
 ]

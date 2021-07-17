@@ -1,221 +1,324 @@
-import { pick } from 'lodash-es'
-import { $auth, $firestore, firebase } from 'boot/firebase'
-import { getCommonsIds } from '../../shared/helper'
-import { Loading, QSpinnerOval } from 'quasar'
+import { $auth, $firestore, firebase, $functions, $storage } from "boot/firebase";
+import { Dialog, Loading, QSpinnerOval } from "quasar";
 
-export const getUserById = ({ }, userId) => {
-  return $firestore.collection('users').doc(userId)
-}
-
+// Functions AUTH
 export const createUserWithEmailAndPassword = ({ commit }, payload) => {
-  commit('setLoading', true)
-  commit('clearError')
+  commit("clearError");
   $auth
     .createUserWithEmailAndPassword(payload.email, payload.password)
     .then(user => handleSuccess(commit, user))
-    .catch(error => handleError(commit, error))
-}
+    .then(Loading.hide())
+    .catch(error => handleError(commit, error));
+};
 
-export const signInWithEmailAndPassword = ({ commit }, payload) => {
-  commit('setLoading', true)
-  commit('clearError')
+export const signInWithEmailAndPassword = ({ commit, dispatch }, payload) => {
+  commit("clearError");
   return $auth
     .signInWithEmailAndPassword(payload.email, payload.password)
     .then(user => handleSuccess(commit, user))
-    .catch(error => handleError(commit, error))
-}
+    .then(Loading.hide())
+    .catch(error => handleError(commit, error));
+};
 
 export const signInWithPopup = ({ commit }) => {
-  commit('setLoading', true)
-  commit('clearError')
+  commit("clearError");
   return $auth
     .signInWithPopup(new firebase.auth.GoogleAuthProvider())
     .then(user => handleSuccess(commit, user))
-    .catch(error => handleError(commit, error))
-}
+    .catch(error => handleError(commit, error));
+};
 
 export const logout = async ({ commit }) => {
-  await $auth.signOut()
-  commit('setCurrentUser', null)
-}
+  await $auth.signOut();
+  commit("setCurrentUser", null);
+  commit("setUser", null);
+};
 
-export const createOrUpdateOnFirestore = async ({ commit }, payload) => {
-  const newUser = {
-    id: payload.uid,
-    name: payload.displayName,
-    email: payload.email,
-    photoUrl: payload.photoURL,
-    cla: "amor",
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
-    0: 0,
-    jcoins: 0,
-    saida: 0
+// Functions USER
+export const loadUser = async ({ state, commit }) => {
+  if (!state.currentUser) {
+    return null;
+  } else {
+    const uid = state.currentUser.uid;
+    Loading.show({ spinner: QSpinnerOval, message: "Atualizando..." });
+
+    return await $firestore
+      .collection("users")
+      .doc(uid)
+      .onSnapshot(doc => {
+        commit("setUser", doc.data());
+        Loading.hide();
+      });
   }
-  await $firestore
-    .collection('users')
-    .doc(payload.uid)
-    .set(newUser, { merge: true })
-  return newUser
-}
+};
 
-export const updateUser = async ({ commit }) => {
-  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
+export const addGamersProjeto = async ({ state, dispatch, getters }) => {
+  Loading.show({
+    spinner: QSpinnerOval,
+    message: "Aguarde! Estamos adicionando você nesse projeto..."
+  });
+  return new Promise((resolve, reject) => {
+    let verificaMembers = getters.verificaMembers;
 
-  const cards = await $firestore
-    .collection('users')
-    .orderBy("desempenho", "desc")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-          commit('setUsuarios', doc.data())
-          Loading.hide()
-      });
-    })
-    .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-  Loading.hide()
-  return cards
-}
+    if (!state.currentUser || verificaMembers) {
+      Loading.hide();
+      reject();
+    } else {
+      var uid = state.selectProject.id;
+      var value = {
+        projectID: uid
+      };
 
+      var refAddGamersProjeto = $functions.httpsCallable("addGamersProjeto");
+      refAddGamersProjeto(value)
+        .then(function(result) {
+          Loading.hide();
+          resolve(result);
+        })
+        .catch(function(error) {
+          Loading.hide();
+          reject(error);
+        });
+    }
+  });
+};
 
-export const salvarUsuario = async ({ commit }, payload) => {
-  commit('setSalvarUsuario', payload)
-}
+export const uploadPhotoURL = async ({ state }, payload) => {
+  Loading.show({
+    spinner: QSpinnerOval,
+    message: "Aguarde! Estamos salvando sua imagem..."
+  });
+  const uid = payload.uid;
+  const collectionName = payload.collectionName;
+  const files = payload.files;
+  const type = payload.type;
 
-export const updateJcoins = async ({ rootState }, payload) => {
-  const validKeys = ['saida']  
-  const newCompra = pick(payload, validKeys)
-  const { uid } = getCommonsIds({ rootState })  
-  const jcoins = await $firestore
-    .collection('users')
-    .doc(uid)
-    .update(newCompra)
-  return jcoins
-}
+  if (!files) {
+    return;
+  } else {
+    const ref = `${collectionName}/${uid}/${type}/`;
+    const projetoRef = $storage.ref().child(ref);
+    const uploadTask = projetoRef.put(files);
 
-export const setComprar = async ({ rootState }, payload) => {
- 
-  const jcoins = await $firestore
-    .collection('comprado')
-    .doc()
-    .set(payload)
-  return jcoins
-}
+    uploadTask.on(
+      "state_changed",
+      function(snapshot) {
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED: // or 'paused'
+            break;
+          case firebase.storage.TaskState.RUNNING: // or 'running'
+            break;
+        }
+      },
+      function(error) {
+        Loading.hide();
+        // Handle unsuccessful uploads
+        console.log(error);
+      },
+      function() {
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          var value = null;
 
-export const blockJornada = async ({ commit }) => {
-  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-
-  const cards = await $firestore
-    .collection('jornada')
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-          commit('setBlock', doc.data())
-          Loading.hide()
-      });
-    })
-    .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-    Loading.hide()
-    return cards
-}
-
-export const addLoja = async ({ commit }) => {
-  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-
-  const loja = await $firestore
-    .collection('loja')
-    .get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
-        commit('setLoja', doc.data())
-      });
-    })
-    .catch(err => {
-      console.log('Error getting documents', err);
-    });
-
-    Loading.hide()
-}
-
-export const userCadastrado = async ({ rootState, commit }) => {
-  const { uid } = getCommonsIds({ rootState })
-  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-
-  const cards = await $firestore
-    .collection('users')
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        if (doc.id === uid) {
-          commit('setCards', doc.data())
-          Loading.hide()
+          if (type === "photoURL") {
+            value = {
+              photoURL: downloadURL
+            };
+          } else if (type === "capa") {
+            value = {
+              capa: downloadURL
+            };
+          }
+          //("uploadCapa:", value);
+          $firestore
+            .collection(collectionName)
+            .doc(uid)
+            .update(value)
+            .then(Loading.hide())
+            .catch(error => handleError(commit, error));
+        });
       }
-      });
-    })
-    .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-    Loading.hide()
-}
+    );
+    return uploadTask;
+  }
+};
 
-export const mediaCla = async ({ commit, state }) => {
-  Loading.show({spinner: QSpinnerOval, message: 'Atualizando...' })
-
-  var cla = state.cards.cla
-
-  const cards = await $firestore
-    .collection(cla)
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        commit('setCla', doc.data())
-        Loading.hide()
-      });
-    })
-    .catch((err) => {
-      console.log('Error getting documents', err);
-    });
-    Loading.hide()
-    return cards
-}
-
-export const updateUsuario = async ({ rootState }, payload) => {
-  var uid = payload.uid
-  var jcoins = {jcoins: payload.jcoins}
-  console.log('newCompra', jcoins)
-  const user = await $firestore
-    .collection('users')
+export const updateCadastroUser = async ({ state, commit }, payload) => {
+  Loading.show({
+    spinner: QSpinnerOval,
+    message: "Aguarde! Estamos salvando seus dados..."
+  });
+  const { uid } = state.currentUser;
+  return await $firestore
+    .collection("users")
     .doc(uid)
-    .update(jcoins)
-  return user
-}
+    .update({
+      ...payload
+    })
+    .then(commit("sucess", true))
+    .then(Loading.hide())
+    .catch(error => handleError(commit, error));
+};
 
-export const removeUsuario = async ({ rootState }, payload) => {
-  const user = await $firestore
-    .collection('users')
-    .doc(payload)
-    .delete()
-  return user
-}
+// Functions PROJECT
+export const loadProject = async ({ commit, state }) => {
+  Loading.show({ spinner: QSpinnerOval, message: "Procurando..." });
+
+  $firestore
+    .collection("project")
+    .limit(25)
+    .onSnapshot(querySnapshot => {
+      querySnapshot.docChanges().forEach(change => {
+        var value = {
+          id: change.doc.id,
+          data: change.doc.data()
+        };
+
+        if (change.type === "added") {
+          commit("setProjects", value);
+          Loading.hide();
+        }
+        if (change.type === "modified") {
+          commit("updateProjects", value);
+          Loading.hide();
+        }
+        if (change.type === "removed") {
+          commit("deleteProjects", value);
+          Loading.hide();
+        }
+      });
+    });
+};
+
+// Carrega dados do app
+export const addSelectProject = async ({ commit, dispatch }, payload) => {
+  var nickname = payload;
+  const isClientSide = typeof window !== "undefined";
+
+  if (isClientSide && !window.navigator.onLine) {
+
+    Loading.hide();
+    Dialog.create({
+      dark: true,
+      title: "Modo Off-line",
+      message:
+        "Nenhuma conexão à Internet encontrada. O aplicativo está sendo executado no modo offline.",
+      html: true,
+      ok: {
+        label: "OK",
+        unelevated: true
+      },
+      position: "top",
+      color: "positive"
+    }).onOk(() => {});
+  } else if(nickname) {
+
+    Loading.hide();
+    return $firestore
+      .collection("project")
+      .where("nickname", "==", nickname)
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          var value = {
+            id: doc.id,
+            data: doc.data()
+          };
+          commit("setSelectProject", value);
+          dispatch('getDesafio')
+
+          Loading.hide();
+        });
+      })
+      .catch(err => {
+        console.log("Error getting documents", err);
+      });
+  }
+};
 
 function handleSuccess(commit, user) {
-  commit('setLoading', false)
-  commit('setCurrentUser', user)
+  commit("setCurrentUser", user)
 }
 
 function handleError(commit, error) {
-  commit('setLoading', false)
-  commit('setError', error)
-  console.log(error)
+  Loading.hide();
+  commit("setError", error);
+  console.log(error);
 }
+
+// ok
+export const getPontosMembers = async ({ state, commit }) => {
+  var pontos = state.pontos
+  Loading.hide();
+  if (pontos.length === 0) {
+
+    var members = state.selectProject?.data?.members;
+
+    $firestore.collection("resultados").where('uid', 'in', members)
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            var value = {
+              id: doc.id,
+              data: doc.data()
+            }
+            commit("setPontosMembers", value);
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+  }
+};
+// ok
+export const getMembers = async ({ state, commit }) => {
+  let gamers = state.gamers
+  Loading.hide();
+  if (gamers.length === 0) {
+    var members = state.selectProject?.data?.members;
+
+      $firestore.collection("users").where('uid', 'in', members)
+      .get()
+      .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              var value = {
+                id: doc.id,
+                data: doc.data()
+              }
+              commit("setMembers", value);
+          });
+      })
+      .catch((error) => {
+          console.log("Error getting documents: ", error);
+      });
+
+
+  }
+};
+//ok
+export const getDesafio = async ({ state, commit }) => {
+  const uid = state.selectProject.uid
+  let myDesafio = state.myDesafio
+
+  Loading.hide();
+    if (myDesafio.length === 0) {
+      $firestore.collection("users").where('desafio', '==', uid)
+      .get()
+      .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              var value = {
+                id: doc.id,
+                data: doc.data()
+              }
+              commit("setMyDesafio", value);
+          });
+      })
+      .catch((error) => {
+          console.log("Error getting documents: ", error);
+      });
+
+    }
+
+};
+

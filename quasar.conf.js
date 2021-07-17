@@ -10,15 +10,13 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'vuelidate',
-      'firebase', 
-      'vuefire', 
-      'firebaseui',
+      'firebase',
+      'vuefire',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: [
-      'app.styl', 
-      '~firebaseui/dist/firebaseui.css'
+      'app.styl',
     ],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
@@ -52,10 +50,15 @@ module.exports = function (ctx) {
       directives: [],
 
       // Quasar plugins
-      plugins: [      
+      plugins: [
         'LocalStorage',
-        'Dialog'
+        'Dialog',
+        'Notify'
       ],
+
+      config: {
+        notify: { /* look at QuasarConfOptions from the API card */ }
+      },
       i18n: 'pt-br'
     },
 
@@ -64,11 +67,7 @@ module.exports = function (ctx) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
-      scopeHoisting: true,
       vueRouterMode: 'history',
-      showProgress: false,
-      gzip: false,
-      analyze: false,
       // preloadChunks: false,
       // extractCSS: false,
 

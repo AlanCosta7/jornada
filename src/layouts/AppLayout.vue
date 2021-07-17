@@ -1,131 +1,255 @@
 <template>
-  <q-layout class="layout-app">
-    <q-header elevated>
-      <q-toolbar class="bg-white">
-        <q-toolbar-title class="text-grey-10 text-weight-bolder">
-          {{msg}}
+  <q-layout view="hHh Lpr lff"  class="row fit justify-center bg-blue-grey-1">
+    <q-header
+      class="row justify-center"
+      reveal
+      elevated
+      >
+      <q-toolbar>
+        <q-toolbar-title v-if="selectProject && selectProject.data && selectProject.data.displayName" @click="home" class="text-white text-weight-bolder">
+          {{selectProject.data.displayName}}
         </q-toolbar-title>
-        <template v-if="cards.length !== 0">
-          <div>
-            <q-btn round flat icon="menu" color="black">
-            <q-menu >
-              <q-list style="width: 150px;" class="no-wrap">
-                <q-item clickable :to="{ name: 'projects' }">
-                  <q-item-section>
-                      Dashboard
-                  </q-item-section>
-                </q-item>
-                <q-item clickable :to="{ name: 'painel' }">
-                  <q-item-section>
-                      Desafio
-                  </q-item-section>
-                </q-item>
-                <q-item clickable :to="{ name: 'ranking' }">
-                  <q-item-section>
-                      Ranking
-                  </q-item-section>
-                </q-item>
-                <q-item clickable :to="{ name: 'loja' }">
-                  <q-item-section>
-                      Loja
-                  </q-item-section>
-                </q-item>
-                <q-separator />
-                <q-item clickable>
-                  <q-btn color="red" flat label="Sair" @click="logout()" />
-                </q-item>
-              </q-list>
-            </q-menu>
-            </q-btn>
-          </div>
-        </template>
+        <q-btn
+          aria-label="perfil"
+          size="md"
+          icon="menu"
+          flat
+          @click="drawer = !drawer"
+          round
+        >
+        </q-btn>
+
       </q-toolbar>
+
+        <q-toolbar v-if="selectProject"  inset>
+        </q-toolbar>
+
+      <q-img
+         v-if="selectProject && selectProject.data && selectProject.data.capa"
+        class="header-image absolute-top"
+        alt="imagem de capa"
+        :ratio="16/9"
+        width="100vw"
+        :src="selectProject.data.capa"
+        spinner-color="primary"
+        spinner-size="82px"
+      />
     </q-header>
-    <q-page-container>
+    <q-drawer
+      v-model="drawer"
+      show-if-above
+      :mini="miniState"
+      @mouseover="miniState = false"
+      @mouseout="miniState = true"
+      :width="250"
+      :behavior="mobile ? 'mobile': 'desktop'"
+      :breakpoint="400"
+      bordered
+      class="bg-grey-3"
+    >
+        <q-list padding>
+            <q-item clickable v-ripple @click="onDashboard()">
+              <q-item-section avatar>
+                <q-icon name="dashboard" />
+              </q-item-section>
+              <q-item-section>
+                Dashboard
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="onDesafio()">
+              <q-item-section avatar>
+                <q-icon name="security" />
+              </q-item-section>
+              <q-item-section>
+                Desafio
+              </q-item-section>
+            </q-item>
+            <q-item v-if="currentUser" clickable v-ripple @click="onPerfil()">
+              <q-item-section avatar>
+                <q-avatar size="30px" color="black" text-color="white" >
+                  <div v-if="user && user.photoURL">
+                    <q-img width="30px" :ratio="1" :src="user.photoURL" alt="Foto da persona" >
+                    </q-img>
+                  </div>
+                  <div v-if="!user || !user.photoURL">
+                    <q-icon name="account_circle" size="30px" />
+                  </div>
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                Perfil
+              </q-item-section>
+            </q-item>
+            <q-item v-if="!currentUser" clickable v-ripple @click="login()">
+              <q-item-section avatar>
+                <q-icon name="account_circle" />
+              </q-item-section>
+              <q-item-section>
+                login
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-if="!verificaMembers" v-ripple @click="onParticipar()">
+              <q-item-section avatar>
+                <q-icon name="add" />
+              </q-item-section>
+              <q-item-section>
+                Quero participar
+              </q-item-section>
+            </q-item>
+            <q-item v-if="currentUser" clickable v-ripple @click="logout()" >
+              <q-item-section avatar>
+                <q-icon name="exit_to_app" />
+              </q-item-section>
+              <q-item-section>
+                Sair
+              </q-item-section>
+            </q-item>
+        </q-list>
+    </q-drawer>
+    <Login></Login>
+    <q-page-container class="row justify-center">
       <router-view />
-      
-      <q-dialog v-model="inception">
-        <q-card>
-          <q-card-section>
-            <div class="text-h6">
-              Sair
-            </div>
-          </q-card-section>
-
-          <q-card-section>
-            Tem certeza de deseja sair?
-          </q-card-section>
-
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Sim" @click="sair" />
-            <q-btn v-close-popup flat label="Cancelar" />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
+import { Dialog } from 'quasar';
 import Vuex from "vuex";
+import Login from "../pages/auth/login.vue"
 
 export default {
-  name: "MyLayout",
+  name: "AppLayout",
   data() {
     return {
-      inception: false,
+      drawer: false,
+      miniState: true
     };
   },
-  async mounted() {
-      await this.$store.dispatch('userCadastrado') 
-      await this.$store.dispatch('blockJornada')
-      await this.$store.dispatch('mediaCla')
-      await this.$store.dispatch('addLoja')
-      await this.$store.dispatch("updateUser")
+  components: {
+    Login
+  },
+  watch: {
+    currentUser(val) {
+      if (val) {
+        this.$store.dispatch('loadUser')
+      }
+    },
+  },
+  async created() {
+    var nickname = this.$route.params.nickname
+    await this.$store.dispatch("addSelectProject", nickname)
   },
   computed: {
+    ...Vuex.mapState([
+      'selectProject',
+      'currentUser',
+      "user"
+    ]),
     ...Vuex.mapGetters({
-      currentUser: "currentUser",
-      cards: "cards",
-      jornada: "jornada"
+      verificaMembers: "verificaMembers"
     }),
-    msg() {
-      let grupo = ''
-      let cards = this.cards
-      if (cards.cla === "fe") {
-        grupo = "Guardiões"
-      } else if (cards.cla === "amor") {
-        grupo = "Herdeiros"
-      } else if (cards.cla === "esperanca" ) {
-        grupo = "Gladiadores"
+    contextoPerfil() {
+      var name = this.$route.name;
+      console.log(name)
+      if (name === "cadastro-perfil" || name === "painel") {
+        return true;
       }
-      return grupo        
+      return false;
     },
-    bgcolor() {
-      let color = "fe" 
-      let cards = this.cards
-      if (cards.cla === "fe") {
-        color = "amber" 
-      } else if (cards.cla === "amor") {
-        color = "red-8"
-      } else if (cards.cla === "esperanca" ) {
-        color = "green-6"
-      } else {
-        color = "fe"
-      }
-      return color
-    },
+    mobile() {
+      var mobile = this.$q.platform.is.mobile;
+       if (mobile) {
+         this.miniState = false
+         return true
+       } else {
+         return false
+       }
+    }
   },
   methods: {
-    sair() {
-      this.$store.dispatch("logout")
-      this.$router.push("/")
+    onPerfil() {
+      this.$router.push({ name: 'cadastro-perfil' })
+    },
+    onDrawer() {
+      this.drawer = !this.drawer
+    },
+    onParticipar() {
+      var currentUser = this.currentUser
+      var user = this.user
+      this.onDrawer()
+      if (user) {
+        this.onAddMember()
+      } else if(!currentUser) {
+        this.login()
+      }
+    },
+    onDashboard() {
+      this.$router.push({ name: 'inicio' })
+    },
+    onDesafio() {
+      this.$router.push({ name: 'painel' })
+    },
+    onAddMember() {
+      this.$store.dispatch('addGamersProjeto').then(result => {
+        Loading.hide()
+        if (result.data.status === 200) {
+            Dialog.create({
+              title: "Parabéns!!!",
+              message:
+                "Agora você faz parte da nossa JORNADA",
+              ok: {
+                label: "OK",
+                unelevated: true
+              },
+              position: "top",
+              color: "positive"
+            })
+        }
+
+      }).catch(err => {
+        Loading.hide()
+
+        Dialog.create({
+          title: "Ops!!!",
+          message:
+            "Algo deu errado",
+          ok: {
+            label: "OK",
+            unelevated: true
+          },
+          position: "top",
+          color: "positive"
+        })
+
+      })
     },
     logout() {
-      this.inception = true
+        Dialog.create({
+          title: "Deslogar",
+          message:
+            "tem certeza que deseja sair?",
+          ok: {
+            label: "Sim",
+            unelevated: true
+          },
+          position: "top",
+          color: "positive"
+        }).onOk(() => {
+          this.$store.dispatch("logout")
+          this.home()
+
+        })
+    },
+    home() {
+      this.$router.push("/")
+    },
+    login() {
+      this.$store.commit('setDialogLogin', true)
     },
     inicio() {
-      this.$router.push("/app/inicio")
+      var nickname = this.selectProject.data.nickname
+      this.$router.push({name: 'inicio', params: { nickname: nickname } })
     }
   }
 };

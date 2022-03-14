@@ -20,7 +20,7 @@
         class="column no-wrap full-width row justify-start"
       >
         <q-img
-          :src="item.capa"
+          :src="item.data.capa"
           class="row justify-center"
           width="90vw"
           height="100px"
@@ -37,8 +37,8 @@
 
         <div class="q-ma-md full-width">
           <div class="q-mb-md">
-            <div class="text-weight-bolder text-h6">{{ item.titulo }}</div>
-            <div class="text-weight-bold">{{ item.descricao }}</div>
+            <div class="text-weight-bolder text-h6">{{ item.data.titulo }}</div>
+            <div class="text-weight-bold">{{ item.data.descricao }}</div>
           </div>
           <div class="text-bold">Habilidades:</div>
           <div class="q-gutter-sm text-caption">
@@ -46,41 +46,41 @@
               <div>Criatividade</div>
               <q-linear-progress
                 size="10px"
-                :value="parseInt(item.habilidades.criatividade) / 10"
+                :value="parseInt(item.data.habilidades.criatividade) / 10"
               />
             </div>
             <div>
               <div>Trabalho em equipe</div>
               <q-linear-progress
                 size="10px"
-                :value="parseInt(item.habilidades.trabalhoEmEquipe) / 10"
+                :value="parseInt(item.data.habilidades.trabalhoEmEquipe) / 10"
               />
             </div>
             <div>
               <div>Inteligência emocional</div>
               <q-linear-progress
                 size="10px"
-                :value="parseInt(item.habilidades.inteligenciaEmocional) / 10"
+                :value="parseInt(item.data.habilidades.inteligenciaEmocional) / 10"
               />
             </div>
             <div>
               <div>Liderança</div>
               <q-linear-progress
                 size="10px"
-                :value="parseInt(item.habilidades.lideranca) / 10"
+                :value="parseInt(item.data.habilidades.lideranca) / 10"
               />
             </div>
             <div>
               <div>Tomada de decisão</div>
               <q-linear-progress
                 size="10px"
-                :value="parseInt(item.habilidades.tomadaDeDecisao) / 10"
+                :value="parseInt(item.data.habilidades.tomadaDeDecisao) / 10"
               />
             </div>
           </div>
         </div>
 
-        <div v-if="currentUser" class="container">Meu Desempenho: {{ getPontos() }}pt</div>
+        <div v-if="currentUser" class="container">Meu Desempenho: {{ getPontos(item) }}pt</div>
       </q-carousel-slide>
 
       <template v-slot:control>
@@ -111,26 +111,31 @@
       </template>
     </q-carousel>
 
-    <div v-if="myDesafio.length == 0" class="row justify-center q-pa-md">
-      <q-img
-        src="https://firebasestorage.googleapis.com/v0/b/jornada-jovem.appspot.com/o/icon-jornada%2Ficonfinder_Castle_2913096.svg?alt=media&token=7665f89f-c855-408a-9cc1-e25ab48b88eb"
-        :ratio="1"
-        width="70vw"
-        spinner-color="primary"
-        spinner-size="82px"
-      />
-      <div>
+    <div v-if="myDesafio.length == 0" class="row flex fit justify-center q-pa-md">
+      <div class="col-12 flex flex-center">
+        <q-img
+          src="https://firebasestorage.googleapis.com/v0/b/jornada-jovem.appspot.com/o/icon-jornada%2Ficonfinder_Castle_2913096.svg?alt=media&token=7665f89f-c855-408a-9cc1-e25ab48b88eb"
+          :ratio="1"
+          width="70vw"
+          style="max-width: 300px"
+          spinner-color="primary"
+          spinner-size="82px"
+        />
+      </div>
+      <div class="col-12">
         <h5 class="text-center">
           Ainda não há desafios disponíveis. Aguarde novidades!
         </h5>
       </div>
-      <q-btn
-        color="black"
-        outline
-        icon="chevron_left"
-        label="voltar"
-        @click="onVoltar"
-      />
+      <div class="col-12 flex flex-center">
+        <q-btn
+          color="black"
+          outline
+          icon="chevron_left"
+          label="voltar"
+          @click="onVoltar"
+        />
+      </div>
     </div>
   </q-page>
 </template>
@@ -149,18 +154,19 @@ export default {
     ...Vuex.mapState(["currentUser", "selectProject", "myDesafio", "pontos"]),
   },
   methods: {
-    getPontos() {
-      var uid = this.currentUser.uid;
-      let pontos = this.pontos;
-      var req = pontos.find(function getId(member) {
-        const result = member.uid === uid;
-        if (result) {
-          return member.pontos;
-        } else return 0;
+    getPontos(item) {
+      let pontos = this.pontos
+      let result = 0
+      let count = 0
+      pontos.forEach(element => {
+
+        if (item.id === element.data.uid) {
+          count++
+          result = parseInt(result) + parseInt(element.data.pontos)
+        }
       });
-      if (req) {
-        return req.pontos;
-      }
+      var media = result/count || 0
+      return media
     },
     onVoltar() {
       this.$router.push({ name: "inicio" });

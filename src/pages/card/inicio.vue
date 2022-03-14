@@ -1,12 +1,15 @@
 <template>
   <q-page id="page-inicio" class="bg-blue-grey-1">
-    <div class="q-pa-sm row justify-center" style="max-width: 400px">
-      <div class="q-gutter-md">
+    <div class="q-pa-sm row justify-center" style="max-width: 600px">
+      <div class="col">
         <div class="row text-h6 col-12 q-ma-md">
-          <div>
+          <div class="col-5">
           Membros / {{gamers.length}}
           </div>
-          <q-space />
+          <q-space class="col" />
+          <div class="col-6" v-if="!verificaMembers">
+            <q-btn color="black" size="sm" label="Quero participar" @click="onParticipar()" />
+          </div>
         </div>
         <q-list v-show="gamers.length > 0" bordered v-for="(item, index) in gamers" :key="index">
 
@@ -24,7 +27,7 @@
               </q-item-section>
 
               <q-item-section>
-                <div class="text-h6 ellipsis" v-if="item && item.displayName">{{ item.displayName }}</div>
+                <div class="text-h6 ellipsis" v-if="item && item.data && item.data.displayName">{{ item.data.displayName }}</div>
               </q-item-section>
               <q-card-section>
                 <div class="text-h6 col">{{ getPontos(item) }}</div>
@@ -83,6 +86,7 @@
         src="https://firebasestorage.googleapis.com/v0/b/jornada-jovem.appspot.com/o/icon-jornada%2Ficonfinder_Castle_2913096.svg?alt=media&token=7665f89f-c855-408a-9cc1-e25ab48b88eb"
         :ratio="1"
         width="70vw"
+        style="max-width: 300px"
         spinner-color="primary"
         spinner-size="82px"
       />
@@ -115,10 +119,9 @@ export default {
     };
   },
   watch: {
-    selectProject(val) {
+    currentUser(val) {
       if (val) {
-        console.log(val)
-        this.$store.dispatch("getMembers")
+        this.$store.dispatch('loadUser')
       }
     }
   },
@@ -130,7 +133,10 @@ export default {
       'gamers',
       'pontos',
       'user'
-     ])
+     ]),
+    ...Vuex.mapGetters({
+      verificaMembers: "verificaMembers"
+    }),
   },
   methods: {
     onParticipar() {
@@ -143,18 +149,15 @@ export default {
         this.login()
       }
     },
-    openGame(item) {
-      var uid = item.uid
-      this.$router.push({name: 'gamer', params: {uid: uid}})
-    },
     getPontos(item) {
       let pontos = this.pontos
       let result = 0
       let count = 0
       pontos.forEach(element => {
-        if (item.uid === element.uid) {
+
+        if (item.id === element.data.uid) {
           count++
-          result = parseInt(result) + parseInt(element.pontos)
+          result = parseInt(result) + parseInt(element.data.pontos)
         }
       });
       var media = result/count || 0
@@ -183,11 +186,11 @@ export default {
       for (let i = 0; i < myDesafio.length; i++) {
         const element = myDesafio[i];
         media = pontos + pontos
-        let criatividade = element.habilidades.criatividade
-        let inteligenciaEmocional = element.habilidades.inteligenciaEmocional
-        let lideranca = element.habilidades.lideranca
-        let tomadaDeDecisao = element.habilidades.tomadaDeDecisao
-        let trabalhoEmEquipe = element.habilidades.trabalhoEmEquipe
+        let criatividade = element.data.habilidades.criatividade
+        let inteligenciaEmocional = element.data.habilidades.inteligenciaEmocional
+        let lideranca = element.data.habilidades.lideranca
+        let tomadaDeDecisao = element.data.habilidades.tomadaDeDecisao
+        let trabalhoEmEquipe = element.data.habilidades.trabalhoEmEquipe
 
         let newCriatividade = (pontos * criatividade) /100
         let newInteligenciaEmocional = (pontos * inteligenciaEmocional) /100
@@ -229,7 +232,10 @@ export default {
               },
               position: "top",
               color: "positive"
-            }).onOk(() => {
+            }).onOk(()=> {
+              location.reload()
+            }).onDismiss(()=> {
+              location.reload()
             })
         }
 

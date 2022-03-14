@@ -8,8 +8,7 @@
   "author": "alanpc7 <alanpc7@gmail.com>",
   "private": true,
   "scripts": {
-    "start": "npm run start:prod",
-    "start:prod": "APP_ENV=prod quasar dev",
+    "start": "quasar dev",
     "build": "quasar build --mode pwa",
     "lint": "eslint --ext .js,.vue src",
     "lint:fix": "eslint --ext .js,.vue src --fix",

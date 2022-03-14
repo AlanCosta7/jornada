@@ -274,7 +274,6 @@ export default {
         this.$router.push({name: 'inicio'})
         this.$store.dispatch('loadUser')
         this.onFechar()
-
       }
     },
   },
@@ -331,17 +330,7 @@ export default {
         email: email,
         password: senha,
       };
-      this.$store.dispatch("signInWithEmailAndPassword", value).then( (result) => {
-        var code = result.code
-        var message = result.message
-          if(result && result.code) {
-            var throwError = !!errors[code] ? errors[code] : message
-            alert(throwError)
-          } else if(result && result.user) {
-            this.onFechar()
-           // this.$router.replace({ name: "admin" })
-          }
-      })
+      this.$store.dispatch("signInWithEmailAndPassword", value)
     },
     onFechar() {
       this.$store.commit('setDialogLogin', false)
@@ -378,7 +367,6 @@ export default {
     onReset() {
       this.email = null;
       this.senha = null;
-      this.$store.commit("clearError");
     },
     handleResetPassword() {
       this.$store.dispatch("handleResetPassword");

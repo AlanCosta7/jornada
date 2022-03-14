@@ -3,29 +3,46 @@ import { Dialog, Loading, QSpinnerOval } from "quasar";
 
 // Functions AUTH
 export const createUserWithEmailAndPassword = ({ commit }, payload) => {
-  commit("clearError");
   $auth
     .createUserWithEmailAndPassword(payload.email, payload.password)
     .then(user => handleSuccess(commit, user))
     .then(Loading.hide())
-    .catch(error => handleError(commit, error));
+    .catch(error => {
+      let value = {
+        type: 'negative',
+        message: error
+      }
+      handleCallback(commit, value)
+    });
 };
 
 export const signInWithEmailAndPassword = ({ commit, dispatch }, payload) => {
-  commit("clearError");
   return $auth
     .signInWithEmailAndPassword(payload.email, payload.password)
     .then(user => handleSuccess(commit, user))
     .then(Loading.hide())
-    .catch(error => handleError(commit, error));
+    .catch(error => {
+      let value = {
+        type: 'negative',
+        message: error.message,
+        code: error.code
+      }
+      handleCallback(commit, value)
+      return error
+    });
 };
 
 export const signInWithPopup = ({ commit }) => {
-  commit("clearError");
   return $auth
     .signInWithPopup(new firebase.auth.GoogleAuthProvider())
     .then(user => handleSuccess(commit, user))
-    .catch(error => handleError(commit, error));
+    .catch(error => {
+      let value = {
+        type: 'negative',
+        message: error
+      }
+      handleCallback(commit, value)
+    });
 };
 
 export const logout = async ({ commit }) => {
@@ -135,7 +152,13 @@ export const uploadPhotoURL = async ({ state }, payload) => {
             .doc(uid)
             .update(value)
             .then(Loading.hide())
-            .catch(error => handleError(commit, error));
+            .catch(error => {
+              let value = {
+                type: 'negative',
+                message: error
+              }
+              handleCallback(commit, value)
+            });
         });
       }
     );
@@ -157,7 +180,13 @@ export const updateCadastroUser = async ({ state, commit }, payload) => {
     })
     .then(commit("sucess", true))
     .then(Loading.hide())
-    .catch(error => handleError(commit, error));
+    .catch(error => {
+      let value = {
+        type: 'negative',
+        message: error
+      }
+      handleCallback(commit, value)
+    });
 };
 
 // Functions PROJECT
@@ -193,6 +222,7 @@ export const loadProject = async ({ commit, state }) => {
 // Carrega dados do app
 export const addSelectProject = async ({ commit, dispatch }, payload) => {
   var nickname = payload;
+
   const isClientSide = typeof window !== "undefined";
 
   if (isClientSide && !window.navigator.onLine) {
@@ -225,8 +255,9 @@ export const addSelectProject = async ({ commit, dispatch }, payload) => {
             data: doc.data()
           };
           commit("setSelectProject", value);
+          dispatch('getMembers')
+          dispatch('getPontosMembers')
           dispatch('getDesafio')
-
           Loading.hide();
         });
       })
@@ -240,17 +271,21 @@ function handleSuccess(commit, user) {
   commit("setCurrentUser", user)
 }
 
-function handleError(commit, error) {
-  Loading.hide();
-  commit("setError", error);
-  console.log(error);
+function handleCallback(commit, payload) {
+  console.log('handleCallback', payload)
+  commit("stopLoading");
+  commit("setCallback", {
+    type: payload.type,
+    message: payload.message,
+    code: payload.code
+  });
 }
 
 // ok
 export const getPontosMembers = async ({ state, commit }) => {
-  var pontos = state.pontos
+  state.pontos = []
   Loading.hide();
-  if (pontos.length === 0) {
+  if (state.pontos.length === 0) {
 
     var members = state.selectProject?.data?.members;
 
@@ -273,9 +308,9 @@ export const getPontosMembers = async ({ state, commit }) => {
 };
 // ok
 export const getMembers = async ({ state, commit }) => {
-  let gamers = state.gamers
+  state.gamers = []
   Loading.hide();
-  if (gamers.length === 0) {
+  if (state.gamers.length === 0) {
     var members = state.selectProject?.data?.members;
 
       $firestore.collection("users").where('uid', 'in', members)
@@ -299,11 +334,12 @@ export const getMembers = async ({ state, commit }) => {
 //ok
 export const getDesafio = async ({ state, commit }) => {
   const uid = state.selectProject.uid
-  let myDesafio = state.myDesafio
+  state.myDesafio = []
+  var listaDesafio = state.selectProject?.data?.listaDesafio;
 
   Loading.hide();
-    if (myDesafio.length === 0) {
-      $firestore.collection("users").where('desafio', '==', uid)
+    if (state.myDesafio.length === 0) {
+      $firestore.collection("desafio").where('id', 'in', listaDesafio)
       .get()
       .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {

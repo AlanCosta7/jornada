@@ -1,7 +1,7 @@
 <template>
   <q-layout view="hHh Lpr lff"  class="row fit justify-center bg-blue-grey-1">
     <q-header
-      class="row justify-center"
+      class="row bg-black justify-center"
       reveal
       elevated
       >
@@ -120,6 +120,10 @@ import Login from "../pages/auth/login.vue"
 
 export default {
   name: "AppLayout",
+  preFetch({ store, currentRoute }) {
+    console.log('currentRoute', currentRoute.params.nickname)
+    store.dispatch("addSelectProject", currentRoute.params.nickname)
+  },
   data() {
     return {
       drawer: false,
@@ -136,10 +140,6 @@ export default {
       }
     },
   },
-  async created() {
-    var nickname = this.$route.params.nickname
-    await this.$store.dispatch("addSelectProject", nickname)
-  },
   computed: {
     ...Vuex.mapState([
       'selectProject',
@@ -151,7 +151,6 @@ export default {
     }),
     contextoPerfil() {
       var name = this.$route.name;
-      console.log(name)
       if (name === "cadastro-perfil" || name === "painel") {
         return true;
       }
@@ -169,7 +168,9 @@ export default {
   },
   methods: {
     onPerfil() {
-      this.$router.push({ name: 'cadastro-perfil' })
+      this.$router.push({ name: 'cadastro-perfil' }).catch((err) => {
+        console.log(err)
+      })
     },
     onDrawer() {
       this.drawer = !this.drawer
@@ -185,10 +186,14 @@ export default {
       }
     },
     onDashboard() {
-      this.$router.push({ name: 'inicio' })
+      this.$router.push({ name: 'inicio' }).catch((err) => {
+        console.log(err)
+      })
     },
     onDesafio() {
-      this.$router.push({ name: 'painel' })
+      this.$router.push({ name: 'painel' }).catch((err) => {
+        console.log(err)
+      })
     },
     onAddMember() {
       this.$store.dispatch('addGamersProjeto').then(result => {
@@ -204,6 +209,10 @@ export default {
               },
               position: "top",
               color: "positive"
+            }).onOk(()=> {
+              location.reload()
+            }).onDismiss(()=> {
+              location.reload()
             })
         }
 
@@ -242,14 +251,18 @@ export default {
         })
     },
     home() {
-      this.$router.push("/")
+      this.$router.push("/").catch((err) => {
+        console.log(err)
+      })
     },
     login() {
       this.$store.commit('setDialogLogin', true)
     },
     inicio() {
       var nickname = this.selectProject.data.nickname
-      this.$router.push({name: 'inicio', params: { nickname: nickname } })
+      this.$router.push({name: 'inicio', params: { nickname: nickname } }).catch((err) => {
+        console.log(err)
+      })
     }
   }
 };

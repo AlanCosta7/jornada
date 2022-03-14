@@ -38,9 +38,7 @@ register(process.env.SERVICE_WORKER_FILE, {
   },
 
   updated(registration) {
-    console.log('New content is available; please refresh.')
-    const el = document.querySelector('#new-version-available')
-    el && el.classList.add('show')
+    location.reload()
   },
 
   offline () {

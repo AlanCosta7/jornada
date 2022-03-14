@@ -121,7 +121,7 @@
                   <div class="text-center text-black">
                   <h6>Liderança</h6>
                   <div class="text-bold">A necessidade de fazer gestão no contexto de serviço.</div>
-                  <div>Nesse exato momento seu cérebro está tentando interpretar o mundo externo. Ele está analisando cada sinal do ambiente e construindo um ideia de realidade. Emoção é a reação que o nosso corpo promove a esses sinais. Será que é possível controlar as nossas emoções?</div>
+                  <div>Nesse exato momento seu cérebro está tentando interpretar o mundo externo. Ele está analisando cada sinal do ambiente e construindo uma ideia de realidade. Emoção é a reação que o nosso corpo promove a esses sinais. Será que é possível controlar as nossas emoções?</div>
                   <div><a target="_black" href="https://medium.com/crist%C3%A3os-millennials/intelig%C3%AAncia-emocional-eb384b6f43f4">Leia mais...</a></div>
                 </div>
               </q-carousel-slide>

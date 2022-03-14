@@ -3,6 +3,7 @@
 
 module.exports = function (ctx) {
   return {
+    preFetch: true,
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -12,6 +13,7 @@ module.exports = function (ctx) {
       'vuelidate',
       'firebase',
       'vuefire',
+      'addressbar-color'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -51,8 +53,11 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'LocalStorage',
         'Dialog',
+        'Loading',
+        'LocalStorage',
+        'AddressbarColor',
+        'Meta',
         'Notify'
       ],
 
@@ -95,7 +100,10 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/developing-pwa/configuring-pwa
     pwa: {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
-      workboxOptions: {}, // only for GenerateSW
+       workboxOptions: {
+        skipWaiting: true,
+        clientsClaim: true
+      }, // only for GenerateSW// only for GenerateSW
       manifest: {
         name: 'Jornada',
         short_name: 'Jornada',
